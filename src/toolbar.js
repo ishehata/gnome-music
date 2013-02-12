@@ -7,13 +7,14 @@ const Toolbar = new Lang.Class({
 	_init: function(){
 		this.toolbar = new Gtk.Toolbar();
 		this.toolbar.get_style_context().add_class('menubar');
+		this.toolbar.set_size_request(-1, 42);
 		this._buildToolbar();
 	},
 	
 	_buildToolbar: function(){
 		let leftBtn     = new Gtk.Button({label : "New"});
 		let leftItem    = new Gtk.ToolItem({});
-		let leftSpacer  = new Gtk.ToolItem({expand : true});
+		let leftSpacer  = new Gtk.ToolItem();
 		let centerBox   = new Gtk.Box();
 		let firstBtn    = new Gtk.Button({label : "Artists"});
 		let secondBtn   = new Gtk.Button({label : "Albums"});
@@ -27,6 +28,8 @@ const Toolbar = new Lang.Class({
 		leftItem.add(leftBtn);
 		centerItem.add(centerBox);
 		rightItem.add(rightBtn);
+		leftSpacer.set_expand(true);
+		rightSpacer.set_expand(true);
 		centerBox.pack_start(firstBtn, false, false, 0);
 		centerBox.pack_start(secondBtn, false, false, 0);
 		centerBox.pack_start(thirdBtn, false, false, 0);

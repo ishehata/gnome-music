@@ -3,11 +3,11 @@
 const Lang = imports.lang;
 const Gtk = imports.gi.Gtk;
 const GLib = imports.gi.GLib;
-const tr = imports.toolbar;
+const Toolbar = imports.toolbar;
 
 const Application = new Lang.Class({
         
-        Name: 'gnome-documents',
+        Name: 'Music',
         
         _init: function(){
                 this.application = new Gtk.Application();
@@ -20,8 +20,8 @@ const Application = new Lang.Class({
                 this._window = new Gtk.ApplicationWindow({application: this.application,
                                                           title: "Music"});
 				this._window.set_default_size(640, 400);
-                this._vbox = new Gtk.VBox();
-                this.toolbar = new tr.Toolbar();
+                this._vbox = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL, spacing: 0});
+                this.toolbar = new Toolbar.Toolbar();
                 this.notebook = new Gtk.Notebook();
                 this.mediabar = new Gtk.Toolbar();                
 				this._vbox.pack_start(this.toolbar.toolbar, true, false, 0);
