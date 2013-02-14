@@ -3,7 +3,7 @@
 const Lang = imports.lang;
 const Gtk = imports.gi.Gtk;
 const GLib = imports.gi.GLib;
-const Toolbar = imports.toolbar;
+const Widgets = imports.widgets;
 
 const Application = new Lang.Class({
         
@@ -22,9 +22,9 @@ const Application = new Lang.Class({
                                                           hide_titlebar_when_maximized: true});
 				this._window.set_default_size(640, 400);
                 this._vbox = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL, spacing: 0});
-                this.toolbar = new Toolbar.Toolbar();
+                this.toolbar = new Widgets.Toolbar();
                 this.notebook = new Gtk.Notebook();
-                this.mediabar = new Gtk.Toolbar();                
+                this.mediabar = new Widgets.MediaBar();                
 				this._vbox.pack_start(this.toolbar.toolbar, true, false, 0);
 				this._vbox.pack_start(this.notebook, true, true, 0);
 				this._vbox.pack_end(this.mediabar, true, false, 0);
