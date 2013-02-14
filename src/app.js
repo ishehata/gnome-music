@@ -18,7 +18,8 @@ const Application = new Lang.Class({
 
         _buildUI: function(){
                 this._window = new Gtk.ApplicationWindow({application: this.application,
-                                                          title: "Music"});
+                                                          title: "Music",
+                                                          hide_titlebar_when_maximized: true});
 				this._window.set_default_size(640, 400);
                 this._vbox = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL, spacing: 0});
                 this.toolbar = new Toolbar.Toolbar();

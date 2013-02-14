@@ -30,6 +30,7 @@ const Toolbar = new Lang.Class({
 		rightItem.add(rightBtn);
 		leftSpacer.set_expand(true);
 		rightSpacer.set_expand(true);
+		centerBox.get_style_context().add_class("linked");
 		centerBox.pack_start(firstBtn, false, false, 0);
 		centerBox.pack_start(secondBtn, false, false, 0);
 		centerBox.pack_start(thirdBtn, false, false, 0);
