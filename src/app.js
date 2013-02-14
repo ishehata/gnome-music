@@ -27,7 +27,7 @@ const Application = new Lang.Class({
                 this.mediabar = new Widgets.MediaBar();                
 				this._vbox.pack_start(this.toolbar.toolbar, true, false, 0);
 				this._vbox.pack_start(this.notebook, true, true, 0);
-				this._vbox.pack_end(this.mediabar, true, false, 0);
+				this._vbox.pack_end(this.mediabar.mediabar, true, false, 0);
 				this._window.add(this._vbox);
         }, 
 

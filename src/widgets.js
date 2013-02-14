@@ -2,11 +2,30 @@ const Lang = imports.lang;
 const Gtk = imports.gi.Gtk;
 
 const MediaBar = new Lang.Class({
-		Name: "MediaBar",
+	Name: "MediaBar",
 		
-		_init: function(){
-			this.mediabar = new Gtk.Toolbar();
-		},
+	_init: function(){
+		this.mediabar = new Gtk.Toolbar();
+		this.mediabar.set_size_request(-1, 42);
+		this._buildToolbar();
+	},
+	
+	_buildToolbar: function(){
+		let box = new Gtk.Box()
+		let leftItem = new Gtk.ToolItem();
+		let rewindBtn = new Gtk.Button({label:"Rewind"});
+		let playBtn = new Gtk.Button({label:"Play"});
+		let forwardBtn = new Gtk.Button({label:"Forward"});
+		
+		//rewindBtn.set_stock_id(Gtk.STOCK_MEDIA_REWIND);
+		
+		leftItem.add(box);
+		box.pack_start(rewindBtn, true, false, 3);
+		box.pack_start(playBtn, true, false, 3);
+		box.pack_start(forwardBtn, true, false, 3);
+		
+		this.mediabar.insert(leftItem, -1);
+	},
 		
 });
 
