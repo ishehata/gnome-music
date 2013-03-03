@@ -5,7 +5,7 @@ const Lang = imports.lang;
 const Player = new Lang.Class({
 	Name: "Player",
 	
-	_init: function(){
+	_init: function(){		
 		this.playlist = new Array();
 	},
 	
@@ -25,6 +25,19 @@ const Player = new Lang.Class({
 	},
 	
 	stop: function(){
+	},
+	
+	get_playlist: function(){
+		return this.playlist;
+	},
+	
+	add_to_playlist: function(order){
+	},
+	
+	append_to_playlist: function(){
+	},
+	
+	remove_from_playlist: function(){
 	},
 	
 });

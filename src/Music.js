@@ -12,6 +12,7 @@ const Application = new Lang.Class({
         
         _init: function(){
                 this.application = new Gtk.Application();
+                this.player = new Player.Player();                
 
                 this.application.connect('activate', Lang.bind(this, this._onActivate));
                 this.application.connect('startup', Lang.bind(this, this._onStartup));
