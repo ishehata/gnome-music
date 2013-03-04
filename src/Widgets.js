@@ -40,8 +40,8 @@ const MediaBar = new Lang.Class({
 		let shuffleBtn = new SymbolicToolButton("media-seek-forward-symbolic");
 		this.scale = new Gtk.Scale();
 				
-		//this.scale.set_property("slider-length", 60);
-		this.scale.set_digits(2);
+		this.scale.set_slider_size_fixed(true);
+		//this.scale.set_digits(2);
 		this.scale.set_value_pos(Gtk.PositionType.RIGHT);
 		this.scale.set_range(0.00,4.00);		
 		leftItem.add(leftBox);
