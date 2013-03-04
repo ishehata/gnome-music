@@ -6,8 +6,8 @@ const SymbolicToolButton = new Lang.Class({
 	Name: "Symbolic Tool Button",
 	
     _init: function(iconName){        
-		this.btn = new Gtk.Button();		
-        let icon = new Gio.ThemedIcon.new_with_default_fallbacks(iconName);
+		this.btn = new Gtk.Button();		        
+        let icon = Gio.ThemedIcon.new_with_default_fallbacks(iconName);
         let image = new Gtk.Image();
         image.set_from_gicon(icon, Gtk.IconSize.MENU);
         image.show();
@@ -38,12 +38,15 @@ const MediaBar = new Lang.Class({
 		let playBtn = new SymbolicToolButton("media-playback-start-symbolic");
 		let forwardBtn = new SymbolicToolButton("media-seek-forward-symbolic");
 		let shuffleBtn = new SymbolicToolButton("media-seek-forward-symbolic");
-		this.scale = new Gtk.Scale();
+		//this.scale = new Gtk.Scale();
+		this.scale = Gtk.Scale.new_with_range (Gtk.Orientation.HORIZONTAL, 0.0, 100.0, 5.0);
 				
-		this.scale.set_slider_size_fixed(true);
-		//this.scale.set_digits(2);
+		//this.scale.set_slider_size_fixed(true);
+		this.scale.set_digits(0);
+		this.scale.set_value(50);
+		this.scale.set_valign (Gtk.Align.START);
 		this.scale.set_value_pos(Gtk.PositionType.RIGHT);
-		this.scale.set_range(0.00,4.00);		
+		//this.scale.set_range(0.0,4.0);		
 		leftItem.add(leftBox);
 		centerItem.add(centerBox);
 		rightItem.add(rightBox);
@@ -84,7 +87,7 @@ const Toolbar = new Lang.Class({
 		let newBtn     = new Gtk.Button({label : "New"});		
 		let rightBtn    = new SymbolicToolButton("object-select-symbolic");
 		let leftSpacer  = new Gtk.ToolItem();		
-		let rightSpacer = new Gtk.ToolItem({expand : true});		
+		let rightSpacer = new Gtk.ToolItem();		
 		
 		this.btns = {}		
 		this.btns['artists'] = new Gtk.ToggleButton({label : "Artists"});
@@ -101,7 +104,7 @@ const Toolbar = new Lang.Class({
 		leftBox.pack_start(newBtn, false, false, 0);		
 		rightBox.pack_start(rightBtn.btn, false, false, 0);
 		centerBox.get_style_context().add_class("linked");		
-		for(btn in this.btns)
+		for(var btn in this.btns)
 		{
 			centerBox.pack_start(this.btns[btn], false, false, 0);			
 		}		

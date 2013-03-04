@@ -24,6 +24,7 @@ const Application = new Lang.Class({
                                                           hide_titlebar_when_maximized: true});
 				this._window.set_default_size(640, 400);
                 this._vbox = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL, spacing: 0});
+                this._vbox.set_homogenous = false;
                 this.toolbar = new Widgets.Toolbar();
                 this.notebook = new Gtk.Notebook();
                 this.mediabar = new Widgets.MediaBar();                
