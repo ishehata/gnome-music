@@ -24,41 +24,41 @@ const Lang = imports.lang;
 
 
 const Player = new Lang.Class({
-	Name: "Player",
-	
-	_init: function(){		
-		this.playlist = new Array();
-	},
-	
-	getCurrentSongId: function(){
-	},
-	
-	getPreviousSongId: function(){
-	},
-	
-	getNextSongId: function(){
-	},
-	
-	play: function(){
-	},
-	
-	pause: function() {
-	},
-	
-	stop: function(){
-	},
-	
-	getPlaylist: function(){
-		return this.playlist;
-	},
-	
-	addToPlaylist: function(order){
-	},
-	
-	appendToPlaylist: function(){
-	},
-	
-	removeFromPlaylistById: function(){
-	},
-	
+    Name: "Player",
+
+    _init: function(){		
+        this.playlist = new Array();
+    },
+
+    getCurrentSongId: function(){
+    },
+
+    getPreviousSongId: function(){
+    },
+
+    getNextSongId: function(){
+    },
+
+    play: function(){
+    },
+
+    pause: function() {
+    },
+
+    stop: function(){
+    },
+
+    getPlaylist: function(){
+        return this.playlist;
+    },
+
+    addToPlaylist: function(order){
+    },
+
+    appendToPlaylist: function(){
+    },
+
+    removeFromPlaylistById: function(){
+    },
+
 });

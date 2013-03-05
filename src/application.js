@@ -32,18 +32,18 @@ const Player = imports.player;
 const Gettext = imports.gettext;
 const _ = imports.gettext.gettext;
 
-const Application = new Lang.Class({        
+const Application = new Lang.Class({
         Name: 'Music',
         Extends: Gtk.Application,
         
-        _init: function(){                
-                this.player = new Player.Player();                
+        _init: function(){
+                this.player = new Player.Player();
                 
                 //Gettext.bindtextdomain('gnome-music', Path.LOCALE_DIR);
                 Gettext.textdomain('gnome-music');
                 
                 this.parent({ application_id: 'org.gnome.Music',
-                      flags: Gio.ApplicationFlags.FLAGS_NONE,      
+                      flags: Gio.ApplicationFlags.FLAGS_NONE,
                       inactivity_timeout: 12000 });
 
                 this.connect('activate', Lang.bind(this, this._onActivate));
@@ -57,23 +57,24 @@ const Application = new Lang.Class({
                 this.vbox = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL, spacing: 0});
                 this.toolbar = new Toolbar.Toolbar();
                 this.notebook = new Gtk.Notebook();
-                this.mediabar = new Mediabar.Mediabar();                
+                this.mediabar = new Mediabar.Mediabar();
                 this.views = new Array();
                 
-				this._window.set_default_size(640, 400);                
-                this.vbox.set_homogenous = false;                            
-				this.vbox.pack_start(this.toolbar, false, false, 0);
-				this.vbox.pack_start(this.notebook, true, true, 0);
-				this.vbox.pack_end(this.mediabar, false, false, 0);
-				this._window.add(this.vbox);
+                this._window.set_default_size(640, 400);
+                this.vbox.set_homogenous = false;
+                this.vbox.pack_start(this.toolbar, false, false, 0);
+                this.vbox.pack_start(this.notebook, true, true, 0);
+                this.vbox.pack_end(this.mediabar, false, false, 0);
+                this._window.add(this.vbox);
                 this.views[0] = new Views.Artists();
                 this.views[1] = new Views.Albums();
                 this.views[2] = new Views.Songs();
-                this.views[3] = new Views.Playlists();                
-                this.notebook.append_page(this.views[0].widget, new Gtk.Label({label: "Artists"}));
-                this.notebook.append_page(this.views[1].widget, new Gtk.Label({label: "Albums"}));
-                this.notebook.append_page(this.views[2].widget, new Gtk.Label({label: "Songs"}));
-                this.notebook.append_page(this.views[3].widget, new Gtk.Label({label: "Playlists"}));
+                this.views[3] = new Views.Playlists();
+                this.notebook.set_show_tabs(false);
+                this.notebook.append_page(this.views[0], new Gtk.Label({label: "Artists"}));
+                this.notebook.append_page(this.views[1], new Gtk.Label({label: "Albums"}));
+                this.notebook.append_page(this.views[2], new Gtk.Label({label: "Songs"}));
+                this.notebook.append_page(this.views[3], new Gtk.Label({label: "Playlists"}));
                 this.notebook.set_current_page(1);
         }, 
 

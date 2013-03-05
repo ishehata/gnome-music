@@ -24,10 +24,10 @@ const Gtk = imports.gi.Gtk;
 const Gio = imports.gi.Gio;
 
 const SymbolicToolButton = new Lang.Class({
-	Name: "SymbolicToolButton",
+    Name: "SymbolicToolButton",
     Extends: Gtk.Button,
-	
-    _init: function(iconName){        		
+    
+    _init: function(iconName){              
         this.parent();
         let icon = Gio.ThemedIcon.new_with_default_fallbacks(iconName);
         let image = new Gtk.Image();
