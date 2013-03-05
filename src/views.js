@@ -18,42 +18,40 @@
  * Author: Eslam Mostafa <cseslam@gmail.com>
  *
  */
-
+ 
 const Lang = imports.lang;
 const Gtk = imports.gi.Gtk;
 const Gio = imports.gi.Gio;
+const Widgets = imports.widgets;
 
-const SymbolicToolButton = new Lang.Class({
-	Name: "SymbolicToolButton",
-    Extends: Gtk.Button,
-	
-    _init: function(iconName){        		
-        this.parent();
-        let icon = Gio.ThemedIcon.new_with_default_fallbacks(iconName);
-        let image = new Gtk.Image();
-        image.set_from_gicon(icon, Gtk.IconSize.MENU);
-        image.show();
-        this.add(image);
-        this.set_size_request(34, 34);
-     },
-});
-
-
-const SymbolicToggleButton = new Lang.Class({
-    Name: "SymbolicToggleButton",
-    Extends: Gtk.ToggleButton,
+const Artists = new Lang.Class({
+    Name: "Artists",
     
-    _init: function(iconName){
-        this.parent();
-        
-        let icon = Gio.ThemedIcon.new_with_default_fallbacks(iconName);
-        let image = new Gtk.Image();
-        image.set_from_gicon(icon, Gtk.IconSize.MENU);
-        image.show();
-        this.add(image);
-        this.set_size_request(34, 34);
+    _init: function(){
     },
+    
 });
 
+const Albums = new Lang.Class({
+    Name: "Albums",
+    
+    _init: function(){
+    },
+    
+});
 
+const Songs = new Lang.Class({
+    Name: "Songs",
+    
+    _init: function(){
+    },
+    
+});
 
+const Playlists = new Lang.Class({
+    Name: "Playlists",
+    
+    _init: function(){
+    },
+    
+});

@@ -27,6 +27,7 @@ const GLib = imports.gi.GLib;
 const Toolbar = imports.toolbar;
 const Mediabar = imports.mediabar;
 const Widgets = imports.widgets;
+const Views = imports.views;
 const Player = imports.player;
 const Gettext = imports.gettext;
 const _ = imports.gettext.gettext;
@@ -53,16 +54,27 @@ const Application = new Lang.Class({
                 this._window = new Gtk.ApplicationWindow({application: this,
                                                           title: _("Music"),
                                                           hide_titlebar_when_maximized: true});
-				this._window.set_default_size(640, 400);
                 this.vbox = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL, spacing: 0});
-                this.vbox.set_homogenous = false;
                 this.toolbar = new Toolbar.Toolbar();
                 this.notebook = new Gtk.Notebook();
                 this.mediabar = new Mediabar.Mediabar();                
+                this.views = new Array();
+                
+				this._window.set_default_size(640, 400);                
+                this.vbox.set_homogenous = false;                            
 				this.vbox.pack_start(this.toolbar, false, false, 0);
 				this.vbox.pack_start(this.notebook, true, true, 0);
 				this.vbox.pack_end(this.mediabar, false, false, 0);
 				this._window.add(this.vbox);
+                this.views[0] = new Views.Artists();
+                this.views[1] = new Views.Albums();
+                this.views[2] = new Views.Songs();
+                this.views[3] = new Views.Playlists();                
+                this.notebook.append_page({child : this.views[0], tab_label : "Artists"});
+                this.notebook.append_page({child : this.views[1], tab_label : "Albums"});
+                //this.notebook.append_page({this.views[2], "Songs"});
+                //this.notebook.append_page({this.views[3], "Playlists"});
+                this.notebook.set_current_page(1);
         }, 
 
         _onActivate: function(){
