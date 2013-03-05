@@ -27,7 +27,7 @@ const GLib = imports.gi.GLib;
 const Toolbar = imports.toolbar;
 const Mediabar = imports.mediabar;
 const Widgets = imports.widgets;
-const Views = imports.views;
+const Views = imports.view;
 const Player = imports.player;
 const Gettext = imports.gettext;
 const _ = imports.gettext.gettext;
@@ -70,10 +70,10 @@ const Application = new Lang.Class({
                 this.views[1] = new Views.Albums();
                 this.views[2] = new Views.Songs();
                 this.views[3] = new Views.Playlists();                
-                this.notebook.append_page({child : this.views[0], tab_label : "Artists"});
-                this.notebook.append_page({child : this.views[1], tab_label : "Albums"});
-                //this.notebook.append_page({this.views[2], "Songs"});
-                //this.notebook.append_page({this.views[3], "Playlists"});
+                this.notebook.append_page(this.views[0].widget, new Gtk.Label({label: "Artists"}));
+                this.notebook.append_page(this.views[1].widget, new Gtk.Label({label: "Albums"}));
+                this.notebook.append_page(this.views[2].widget, new Gtk.Label({label: "Songs"}));
+                this.notebook.append_page(this.views[3].widget, new Gtk.Label({label: "Playlists"}));
                 this.notebook.set_current_page(1);
         }, 
 

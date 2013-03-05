@@ -26,32 +26,32 @@ const Widgets = imports.widgets;
 
 const Artists = new Lang.Class({
     Name: "Artists",
-    
     _init: function(){
+        this.widget = new Gtk.Box();
     },
     
 });
 
 const Albums = new Lang.Class({
     Name: "Albums",
-    
     _init: function(){
+        this.widget = new Gtk.Box();
     },
     
 });
 
 const Songs = new Lang.Class({
     Name: "Songs",
-    
     _init: function(){
+        this.widget = new Gtk.Box();
     },
     
 });
 
 const Playlists = new Lang.Class({
     Name: "Playlists",
-    
     _init: function(){
+        this.widget = new Gtk.Box();
     },
     
 });
