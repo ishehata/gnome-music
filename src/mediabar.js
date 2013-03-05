@@ -47,7 +47,7 @@ const Mediabar = new Lang.Class({
 		let forwardBtn = new Widgets.SymbolicToolButton("media-skip-forward-symbolic");
 		let shuffleBtn = new Widgets.SymbolicToolButton("media-playlist-shuffle-symbolic");
 		//this.scale = new Gtk.Scale();
-		this.scale = new Gtk.Scale.new_with_range (Gtk.Orientation.HORIZONTAL, 0.0, 100.0, 5.0);
+		this.scale = Gtk.Scale.new_with_range (Gtk.Orientation.HORIZONTAL, 0.0, 100.0, 5.0);
 				
 		//this.scale.set_slider_size_fixed(true);
 		this.scale.set_digits(0);
