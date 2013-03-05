@@ -76,10 +76,16 @@ const Application = new Lang.Class({
                 this.notebook.append_page(this.views[2], new Gtk.Label({label: "Songs"}));
                 this.notebook.append_page(this.views[3], new Gtk.Label({label: "Playlists"}));
                 this.notebook.set_current_page(1);
+                
+                this.toolbar.show_all();
+                this.notebook.show_all();
+                this.mediabar.show_all();
+                this.vbox.show_all();
         }, 
 
         _onActivate: function(){
-                this._window.show_all();
+                this._window.show();
+//                this.mediabar.setModeEmpty();
         },
 
         _onStartup: function(){

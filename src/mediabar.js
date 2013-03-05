@@ -42,34 +42,38 @@ const Mediabar = new Lang.Class({
         let centerBox = new Gtk.Box()
         let rightBox = new Gtk.Box()
         let spacer = new Gtk.ToolItem()
-        let rewindBtn  = new Widgets.SymbolicToggleButton("media-skip-backward-symbolic");
-        let playBtn = new Widgets.SymbolicToolButton("media-playback-start-symbolic");
-        let forwardBtn = new Widgets.SymbolicToolButton("media-skip-forward-symbolic");
-        let shuffleBtn = new Widgets.SymbolicToolButton("media-playlist-shuffle-symbolic");
-        //this.scale = new Gtk.Scale();
-        this.scale = Gtk.Scale.new_with_range (Gtk.Orientation.HORIZONTAL, 0.0, 100.0, 5.0);
-                
-        //this.scale.set_slider_size_fixed(true);
-        this.scale.set_digits(0);
-        this.scale.set_value(50);
-        this.scale.set_valign (Gtk.Align.START);
-        this.scale.set_value_pos(Gtk.PositionType.RIGHT);
-        //this.scale.set_range(0.0,4.0);        
+        this.rewindBtn  = new Widgets.SymbolicToolButton("media-skip-backward-symbolic", true);
+        this.playBtn = new Widgets.SymbolicToolButton("media-playback-start-symbolic", true);
+        this.forwardBtn = new Widgets.SymbolicToolButton("media-skip-forward-symbolic", true);
+        this.scale = new Widgets.Scale();
+        this.star = new Widgets.SymbolicToolButton("non-starred-symbolic", false);
+        this.shuffleBtn = new Widgets.SymbolicToggleButton("media-playlist-shuffle-symbolic");                
+        
         leftItem.add(leftBox);
         centerItem.add(centerBox);
         rightItem.add(rightBox);
         spacer.set_expand(true);
         leftBox.get_style_context().add_class("linked");
-        leftBox.pack_start(rewindBtn, true, false, 0);
-        leftBox.pack_start(playBtn, true, false, 0);
-        leftBox.pack_start(forwardBtn, true, false, 0);
-        centerBox.pack_start(this.scale, true, false, 3);
-        rightBox.pack_start(shuffleBtn, true, false, 3);
+        leftBox.pack_start(this.rewindBtn, true, false, 0);
+        leftBox.pack_start(this.playBtn, true, false, 0);
+        leftBox.pack_start(this.forwardBtn, true, false, 0);
+        centerBox.pack_start(this.scale, true, true, 3);
+        rightBox.pack_start(this.star, true, false, 3);
+        rightBox.pack_start(this.shuffleBtn, true, false, 3);
         
         this.insert(leftItem, -1);
         this.insert(centerItem, -1);
         this.insert(spacer, -1);
         this.insert(rightItem, -1);
     },
+    
+    
+    setModePlaying: function(){},
+    
+    setModeEmpty: function(){        
+        this.scale.hide();
+        this.star.hide();
+    },
         
 });
+

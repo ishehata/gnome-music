@@ -39,18 +39,18 @@ const Toolbar = new Lang.Class({
         let leftItem    = new Gtk.ToolItem();
         let rightItem   = new Gtk.ToolItem();
         let centerItem  = new Gtk.ToolItem();
-        let leftBox   = new Gtk.Box();      
-        let centerBox   = new Gtk.Box();        
-        let rightBox   = new Gtk.Box();     
-        let backBtn = new Widgets.SymbolicToolButton("go-previous-symbolic");
-        let newBtn     = new Gtk.Button({label : "New"});       
-        let rightBtn    = new Widgets.SymbolicToolButton("object-select-symbolic");
-        let leftSpacer  = new Gtk.ToolItem();       
-        let rightSpacer = new Gtk.ToolItem();       
+        let leftBox   = new Gtk.Box();
+        let centerBox   = new Gtk.Box();
+        let rightBox   = new Gtk.Box();
+        let backBtn = new Widgets.SymbolicToolButton("go-previous-symbolic", true);
+        let newBtn     = new Gtk.Button({label : "New"});
+        let rightBtn    = new Widgets.SymbolicToolButton("object-select-symbolic", true);
+        let leftSpacer  = new Gtk.ToolItem();
+        let rightSpacer = new Gtk.ToolItem();
         
-        this.btns = {}      
+        this.btns = {};
         this.btns['artists'] = new Gtk.ToggleButton({label : "Artists"});
-        this.btns['albums'] = new Gtk.ToggleButton({label : "Albums"});             
+        this.btns['albums'] = new Gtk.ToggleButton({label : "Albums"});
         this.btns['songs'] = new Gtk.ToggleButton({label : "Songs"});
         this.btns['playlists']  = new Gtk.ToggleButton({label : "Playlists"});
                 
@@ -59,10 +59,10 @@ const Toolbar = new Lang.Class({
         rightItem.add(rightBox);
         leftSpacer.set_expand(true);
         rightSpacer.set_expand(true);
-        leftBox.pack_start(backBtn, false, false, 0);       
-        leftBox.pack_start(newBtn, false, false, 0);        
-        rightBox.pack_start(rightBtn, false, false, 0);
-        centerBox.get_style_context().add_class("linked");      
+        leftBox.pack_start(backBtn, false, false, 3);
+        leftBox.pack_start(newBtn, false, false, 3);
+        rightBox.pack_start(rightBtn, false, false, 3);
+        centerBox.get_style_context().add_class("linked");
         for(var btn in this.btns)
         {
             centerBox.pack_start(this.btns[btn], false, false, 0);          
@@ -80,8 +80,11 @@ const Toolbar = new Lang.Class({
         this.btns['playlists'].connect('clicked', Lang.bind(this, this._onTogglePlaylists));
     },
     
-    _onToggleArtists: function(){},    
-    _onToggleAlbums: function(){},    
-    _onToggleSongs: function(){},    
-    _onTogglePlaylists: function(){},    
+    _onToggleArtists: function(){},
+    
+    _onToggleAlbums: function(){},
+    _onToggleSongs: function(){},
+      
+    _onTogglePlaylists: function(){},
+    
 });

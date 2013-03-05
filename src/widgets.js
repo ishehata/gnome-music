@@ -23,18 +23,40 @@ const Lang = imports.lang;
 const Gtk = imports.gi.Gtk;
 const Gio = imports.gi.Gio;
 
+const Scale = new Lang.Class({
+    Name: "Scale",
+    Extends: Gtk.VScale,
+    
+    _init: function(){
+        this.parent();
+        this.set_digits(0);        
+        this.set_valign (Gtk.Align.START);
+        this.set_value_pos(Gtk.PositionType.RIGHT);
+        this.set_range(0.0,4.0);
+        this.set_value(0);
+    },
+    
+    setRange: function(maxValue){
+        this.set_range(0, maxValue);
+    },
+    
+});
+
 const SymbolicToolButton = new Lang.Class({
     Name: "SymbolicToolButton",
     Extends: Gtk.Button,
     
-    _init: function(iconName){              
+    _init: function(iconName, setRelief){
         this.parent();
         let icon = Gio.ThemedIcon.new_with_default_fallbacks(iconName);
         let image = new Gtk.Image();
         image.set_from_gicon(icon, Gtk.IconSize.MENU);
         image.show();
         this.add(image);
-        this.set_size_request(34, 34);
+        this.set_size_request(34, 34);        
+        if ( setRelief === false ) {
+            this.set_relief(Gtk.ReliefStyle.NONE);
+        }
      },
 });
 
