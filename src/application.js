@@ -50,12 +50,12 @@ const Application = new Lang.Class({
                 this.connect('startup', Lang.bind(this, this._onStartup));
         },
 
-        buildUI: function(){
+        _buildUI: function(){
                 this._window = new Gtk.ApplicationWindow({application: this,
                                                           title: _("Music"),
                                                           hide_titlebar_when_maximized: true});
                 this.vbox = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL, spacing: 0});
-                this.toolbar = new Toolbar.Toolbar();
+                this.toolbar = new Toolbar.Toolbar(this);
                 this.notebook = new Gtk.Notebook();
                 this.mediabar = new Mediabar.Mediabar();
                 this.views = new Array();
@@ -83,12 +83,24 @@ const Application = new Lang.Class({
                 this.vbox.show_all();
         }, 
         
-        buildMenu: function(){
-            let builder = Gtk.Builder();
+        _buildMenu: function(){
+            let builder = new Gtk.Builder();
             
-            builder.add_from_resource('app-menu.ui');
+            builder.add_from_resource('resources/app-menu.ui'); //fix this
             let menu = builder.get_object('app-menu');
             this.set_app_menu(menu);
+        },
+        
+        switchToView: function(view){
+            if (view == 'artists')
+                this.notebook.set_current_page(0);
+            else if (view == 'albums')
+                this.notebook.set_current_page(1);
+            else if (view == 'songs')
+                this.notebook.set_current_page(2);
+            else if (view == 'playlists')
+                this.notebook.set_current_page(3);
+            this.notebook.show_all();
         },
 
         _onActivate: function(){
@@ -97,7 +109,8 @@ const Application = new Lang.Class({
         },
 
         _onStartup: function(){
-                this.buildUI();
+                this._buildUI();
+                //this._buildMenu(); fix this
         },
 });
 

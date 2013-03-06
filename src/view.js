@@ -24,8 +24,17 @@ const Gtk = imports.gi.Gtk;
 const Gio = imports.gi.Gio;
 const Widgets = imports.widgets;
 
+const Default = new Lang.Class({
+    Name: "DefaultView",
+    Extends: Gtk.Box,
+    
+    _init: function(){
+        this.parent();
+    },
+});
+
 const Artists = new Lang.Class({
-    Name: "Artists",
+    Name: "ArtistsView",
     Extends: Gtk.Box,
     
     _init: function(){
@@ -35,7 +44,7 @@ const Artists = new Lang.Class({
 });
 
 const Albums = new Lang.Class({
-    Name: "Albums",
+    Name: "AlbumsView",
     Extends: Gtk.Box,
     
     _init: function(){
@@ -43,12 +52,13 @@ const Albums = new Lang.Class({
         this.label = new Gtk.Label({label : "Hello Music!"});
 
         this.pack_start(this.label, true, true, 6);
+        this.show_all();
     },
     
 });
 
 const Songs = new Lang.Class({
-    Name: "Songs",
+    Name: "SongsView",
     Extends: Gtk.Box,
     
     _init: function(){
@@ -58,7 +68,7 @@ const Songs = new Lang.Class({
 });
 
 const Playlists = new Lang.Class({
-    Name: "Playlists",
+    Name: "PlaylistsView",
     Extends: Gtk.Box,
     
     _init: function(){

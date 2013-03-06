@@ -28,7 +28,9 @@ const Toolbar = new Lang.Class({
     Name: "Toolbar",
     Extends: Gtk.Toolbar,
     
-    _init: function(){      
+    _init: function(application){
+        this.app = application;
+        
         this.parent();
         this.get_style_context().add_class('menubar');
         this.set_size_request(-1, 42);
@@ -74,18 +76,10 @@ const Toolbar = new Lang.Class({
         this.insert(rightSpacer, -1);
         this.insert(rightItem, -1);
         
-        this.btns['artists'].connect('clicked', Lang.bind(this, this._onToggle));
-        this.btns['albums'].connect('clicked', Lang.bind(this, this._onToggle));
-        this.btns['songs'].connect('clicked', Lang.bind(this, this._onToggle));
-        this.btns['playlists'].connect('clicked', Lang.bind(this, this._onToggle));
-    },
-    
-    toggleOffViewButtons: function(exceptBtn){
-        for(var btn in this.btns)
-        {
-            if(this.btns[btn] != exceptBtn) 
-                this.btns[btn].set_active(false);
-        }
+        this.btns['artists'].connect('clicked', Lang.bind(this, this._onToggle, "artists"));
+        this.btns['albums'].connect('clicked', Lang.bind(this, this._onToggle, "albums"));
+        this.btns['songs'].connect('clicked', Lang.bind(this, this._onToggle, "songs"));
+        this.btns['playlists'].connect('clicked', Lang.bind(this, this._onToggle, "playlists"));
     },
     
     toggleOffCurrentToggled: function(){
@@ -95,9 +89,11 @@ const Toolbar = new Lang.Class({
         }
     },
     
-    _onToggle: function(btn){
+    _onToggle: function(btn, view){
         this.toggleOffCurrentToggled();
         btn.set_sensitive(false);
-        this.currentToggled = btn;                
+        this.currentToggled = btn;
+        print(this.app);
+        this.app.switchToView(view);
     },
 });
