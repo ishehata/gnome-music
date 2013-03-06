@@ -50,7 +50,7 @@ const Application = new Lang.Class({
                 this.connect('startup', Lang.bind(this, this._onStartup));
         },
 
-        _buildUI: function(){
+        buildUI: function(){
                 this._window = new Gtk.ApplicationWindow({application: this,
                                                           title: _("Music"),
                                                           hide_titlebar_when_maximized: true});
@@ -82,6 +82,14 @@ const Application = new Lang.Class({
                 this.mediabar.show_all();
                 this.vbox.show_all();
         }, 
+        
+        buildMenu: function(){
+            let builder = Gtk.Builder();
+            
+            builder.add_from_resource('app-menu.ui');
+            let menu = builder.get_object('app-menu');
+            this.set_app_menu(menu);
+        },
 
         _onActivate: function(){
                 this._window.show();
@@ -89,7 +97,7 @@ const Application = new Lang.Class({
         },
 
         _onStartup: function(){
-                this._buildUI();
+                this.buildUI();
         },
 });
 

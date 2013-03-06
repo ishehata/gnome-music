@@ -47,12 +47,12 @@ const Toolbar = new Lang.Class({
         let rightBtn    = new Widgets.SymbolicToolButton("object-select-symbolic", true);
         let leftSpacer  = new Gtk.ToolItem();
         let rightSpacer = new Gtk.ToolItem();
-        
         this.btns = {};
-        this.btns['artists'] = new Gtk.ToggleButton({label : "Artists"});
-        this.btns['albums'] = new Gtk.ToggleButton({label : "Albums"});
-        this.btns['songs'] = new Gtk.ToggleButton({label : "Songs"});
-        this.btns['playlists']  = new Gtk.ToggleButton({label : "Playlists"});
+        this.btns['artists'] = new Gtk.Button({label : "Artists"});
+        this.btns['albums'] = new Gtk.Button({label : "Albums"});
+        this.btns['songs'] = new Gtk.Button({label : "Songs"});
+        this.btns['playlists']  = new Gtk.Button({label : "Playlists"});
+        this.currentToggled = null;
                 
         leftItem.add(leftBox);
         centerItem.add(centerBox);
@@ -74,17 +74,30 @@ const Toolbar = new Lang.Class({
         this.insert(rightSpacer, -1);
         this.insert(rightItem, -1);
         
-        this.btns['artists'].connect('clicked', Lang.bind(this, this._onToggleArtists));
-        this.btns['albums'].connect('clicked', Lang.bind(this, this._onToggleAlbums));
-        this.btns['songs'].connect('clicked', Lang.bind(this, this._onToggleSongs));
-        this.btns['playlists'].connect('clicked', Lang.bind(this, this._onTogglePlaylists));
+        this.btns['artists'].connect('clicked', Lang.bind(this, this._onToggle));
+        this.btns['albums'].connect('clicked', Lang.bind(this, this._onToggle));
+        this.btns['songs'].connect('clicked', Lang.bind(this, this._onToggle));
+        this.btns['playlists'].connect('clicked', Lang.bind(this, this._onToggle));
     },
     
-    _onToggleArtists: function(){},
+    toggleOffViewButtons: function(exceptBtn){
+        for(var btn in this.btns)
+        {
+            if(this.btns[btn] != exceptBtn) 
+                this.btns[btn].set_active(false);
+        }
+    },
     
-    _onToggleAlbums: function(){},
-    _onToggleSongs: function(){},
-      
-    _onTogglePlaylists: function(){},
+    toggleOffCurrentToggled: function(){
+        if (this.currentToggled != null) 
+        {
+            this.currentToggled.set_sensitive(true);            
+        }
+    },
     
+    _onToggle: function(btn){
+        this.toggleOffCurrentToggled();
+        btn.set_sensitive(false);
+        this.currentToggled = btn;                
+    },
 });

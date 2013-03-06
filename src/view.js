@@ -40,6 +40,9 @@ const Albums = new Lang.Class({
     
     _init: function(){
         this.parent();
+        this.label = new Gtk.Label({label : "Hello Music!"});
+
+        this.pack_start(this.label, true, true, 6);
     },
     
 });
