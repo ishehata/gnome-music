@@ -42,11 +42,11 @@ const Mediabar = new Lang.Class({
         let centerBox = new Gtk.Box()
         let rightBox = new Gtk.Box()
         let spacer = new Gtk.ToolItem()
-        this.rewindBtn  = new Widgets.SymbolicToolButton("media-skip-backward-symbolic", true);
-        this.playBtn = new Widgets.SymbolicToolButton("media-playback-start-symbolic", true);
-        this.forwardBtn = new Widgets.SymbolicToolButton("media-skip-forward-symbolic", true);
+        this.rewindBtn  = new Widgets.ToolbarButton(null, "media-skip-backward-symbolic", true);
+        this.playBtn = new Widgets.ToolbarButton(null, "media-playback-start-symbolic", true);
+        this.forwardBtn = new Widgets.ToolbarButton(null, "media-skip-forward-symbolic", true);
         this.scale = new Widgets.Scale();
-        this.star = new Widgets.SymbolicToolButton("non-starred-symbolic", false);
+        this.star = new Widgets.ToolbarButton(null, "non-starred-symbolic", false);
         this.shuffleBtn = new Widgets.SymbolicToggleButton("media-playlist-shuffle-symbolic");                
         
         leftItem.add(leftBox);

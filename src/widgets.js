@@ -25,12 +25,11 @@ const Gio = imports.gi.Gio;
 
 const Scale = new Lang.Class({
     Name: "Scale",
-    Extends: Gtk.VScale,
+    Extends: Gtk.HScale,
     
     _init: function(){
         this.parent();
-        this.set_digits(0);        
-        this.set_valign (Gtk.Align.START);
+        this.set_digits(0);
         this.set_value_pos(Gtk.PositionType.RIGHT);
         this.set_range(0.0,4.0);
         this.set_value(0);
@@ -42,18 +41,39 @@ const Scale = new Lang.Class({
     
 });
 
+const ToolbarButton = new Lang.Class({
+    Name: "ToolbarButton",
+    Extends: Gtk.Button,
+    
+    _init: function(label, iconName, relief){
+        this.parent();
+        if(label != null){
+            this.set_label(label);
+        } else {
+            this.set_image(new Gtk.Image.new_from_icon_name(iconName, Gtk.IconSize.BUTTON));            
+        }
+        this.set_size_request(34, 34);        
+        this.set_can_focus(false);
+        if ( relief === false ) {
+            this.set_relief(Gtk.ReliefStyle.NONE);
+        }
+    },
+});
+
 const SymbolicToolButton = new Lang.Class({
     Name: "SymbolicToolButton",
     Extends: Gtk.Button,
     
     _init: function(iconName, setRelief){
         this.parent();
-        let icon = Gio.ThemedIcon.new_with_default_fallbacks(iconName);
-        let image = new Gtk.Image();
-        image.set_from_gicon(icon, Gtk.IconSize.MENU);
-        image.show();
-        this.add(image);
-        this.set_size_request(34, 34);        
+        //let icon = Gio.ThemedIcon.new_with_default_fallbacks(iconName);
+        //let image = new Gtk.Image();
+        //image.set_from_gicon(icon, Gtk.IconSize.MENU);
+        //image.show();
+        //this.add(image);
+        this.set_image(new Gtk.Image.new_from_icon_name(iconName, Gtk.IconSize.BUTTON));
+        this.set_size_request(34, 34);
+        this.set_can_focus(false);
         if ( setRelief === false ) {
             this.set_relief(Gtk.ReliefStyle.NONE);
         }
