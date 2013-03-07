@@ -82,7 +82,8 @@ const Toolbar = new Lang.Class({
         this.app = application;
         
         this.parent();
-        this.get_style_context().add_class('music-topbar');
+        //this.get_style_context().add_class('music-topbar');
+        this.get_style_context().add_class('menubar');
         this.set_size_request(-1, 42);
         this._buildToolbar();
     },
@@ -109,27 +110,12 @@ const Toolbar = new Lang.Class({
         this.btns['playlists']  = new Widgets.ToolbarButton("Playlists", null, true);
         this.currentToggled = null;
                 
-        /*leftItem.add(leftBox);
-        //centerItem.add(centerBox);
-        //rightItem.add(rightBox);
-        //leftSpacer.set_expand(true);
-        rightSpacer.set_expand(true);
-        leftBox.pack_start(backBtn, false, false, 3);
-        leftBox.pack_start(newBtn, false, false, 3);
-        rightBox.pack_start(find, false, false, 3);
-        rightBox.pack_start(rightBtn, false, false, 3);
-        */
         centerBox.get_style_context().add_class("linked");
         for(var btn in this.btns)
         {
             centerBox.pack_start(this.btns[btn], false, false, 0);          
         }       
-         /*       
-        this.insert(leftItem, -1);
-        this.insert(leftSpacer, -1);
-        this.insert(centerItem, -1);
-        this.insert(rightSpacer, -1);
-        this.insert(rightItem, -1);*/
+         
         this.box.pack_start(backBtn, false, false, 3);
         this.box.pack_start(newBtn, false, false, 3);
         this.box.pack_start(new Gtk.Label({label : ""}), true, true, 0);

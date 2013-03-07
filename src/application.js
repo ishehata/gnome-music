@@ -48,7 +48,18 @@ const Application = new Lang.Class({
 
                 this.connect('activate', Lang.bind(this, this._onActivate));
                 this.connect('startup', Lang.bind(this, this._onStartup));
-        },
+       },
+       
+       _defineStyleAndThemes : function() {
+        let provider = new Gtk.CssProvider();
+        provider.load_from_path('resources/gtk-style.css');
+        Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(),
+                                                 provider,
+                                                 600);
+
+        let settings = Gtk.Settings.get_default();
+        settings.gtk_application_prefer_dark_theme = true;
+    },
 
         _buildUI: function(){
                 this._window = new Gtk.ApplicationWindow({application: this,
