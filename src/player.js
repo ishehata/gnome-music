@@ -41,39 +41,55 @@ const Player = new Lang.Class({
         this.playlist.shuffle_mode_changed.connect(Lang.bind(this, this.on_playlist_shuffle_mode_changed);
     },
 
-    getCurrentSongId: function(){
+    _set_ui: function(){
     },
 
-    getPreviousSongId: function(){
+    load: function(){
     },
 
-    getNextSongId: function(){
+    uri: function(){
     },
     
-    play_file: function(fileLocation){
-        this.source.set_property('location', fileLocation);
+    _on_play_btn_toggled: function(btn){
+        
     },
 
-    play: function(){
+    _on_next_btn_clicked: function(btn){
+        this._need_next();
     },
 
-    pause: function() {
+    _on_prev_btn_clicked: function(btn) {
+		this._need_previous();
     },
 
-    stop: function(){
+    _need_next: function(){
+		this.playlist.load_next();
     },
 
-    getPlaylist: function(){
-        return this.playlist;
+    _need_previous: function(){
+        this.playlist.load_previous();
     },
 
-    addToPlaylist: function(order){
+    _on_shuffle_btn_clicked: function(order){
+		this.playlist.set_shuffle(this.shuffle_btn.get_active());
     },
 
-    appendToPlaylist: function(){
+    _on_playlist_shuffle_mode_changed: function(mode){
+		this.shuffle_btn.set_active(mode);
     },
 
-    removeFromPlaylistById: function(){
+    _set_duration: function(duration){
+		this.scale.set_range(0.0, duration*60);
+		this.scale.set_value(0.0);
     },
+    
+    _upadte_position: function(update){
+    },
+    
+    _update_position_cb: function(){
+    },
+    
+    _on_progress_scale_change_value(scroll, newValue){
+     },
 
 });

@@ -31,6 +31,7 @@ const Playlist = new Lang.Class({
         this.list = new Array();
         this.currentIndex = 0;
         this._shuffle = false;
+        this._source_list = new Array();
         this.settings = new GLib.Settings("org.gnome.Music");
         /* convert to js
          public signal void song_selected (Grl.Media media, int index);
@@ -38,7 +39,7 @@ const Playlist = new Lang.Class({
          public signal void shuffle_mode_changed (bool mode);
          */ 
         
-        this.settings.changed.connect (Lang.bind(this, this.on_settings_key_changed));
+        this.settings.changed.connect (Lang.bind(this, this._on_settings_key_changed));
     },    
     
     get_shuffle: function(){
@@ -70,7 +71,7 @@ const Playlist = new Lang.Class({
     load_album: function(){
     },
     
-    load_item_cb: function(media, remaining){
+    _load_item_cb: function(media, remaining){
         if(media != null) {
             this.list.add(media);
         }
@@ -79,39 +80,39 @@ const Playlist = new Lang.Class({
         }
     },
     
-    set_grl: function(){
+    _set_grl: function(){
         let register = Grl.Registery.get_default();
         
         registery.source_added.connect(Lang.bind(this, this.source_added_cb));
         registery.source_removed.connect(Lang.bind(this, this.source_removed_cb));
     },
     
-    source_added_cb: function(source){
+    _source_added_cb: function(source){
         if (source.get_id() != "grl-tracker-source") {
             return;
         }
         
-        debug ("Checking source: %s", this.source.get_id()); //??
+        debug ("Checking source: %s", source.get_id()); //??
         
-        let ops = this.source.supported_operations ();
+        let ops = source.supported_operations ();
         if ((ops & Grl.SupportedOps.QUERY) != 0) {
             debug ("Detected new source availabe: '%s' and it supports queries", source.get_name ());
-            this.source_list.set (source.get_id(), this.source);
+            this._source_list.set (source.get_id(), source);
         }
     },
     
-    source_removed_cb: function(source){
-        for(let id in this.source_list.keys) {
-            if (id == this.source.get_id()) {
-                debug ("Source '%s' is gone", this.source.get_name ());
-                this.source_list.unset (id);
+    _source_removed_cb: function(source){
+        for(let id in this._source_list.keys) {
+            if (id == source.get_id()) {
+                debug ("Source '%s' is gone", source.get_name ());
+                this._source_list.unset (id);
             }
         }
     },
     
     _on_settings_key_changed: function(key){
         if(key == "shuffle"){
-            shuffle_mode_changed(this.settings.get_boolean("shuffle"));
+            this.shuffle_mode_changed(this.settings.get_boolean("shuffle"));
     },
 
 });
