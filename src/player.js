@@ -19,15 +19,26 @@
  *
  */
 
-const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
+const Gtk = imports.gi.Gtk;
+const Gst = imports.gi.Gst;
+
+const Mainloop = import.Mainloop;
 
 
 const Player = new Lang.Class({
     Name: "Player",
+    Extends: Gst.Pipeline;
 
-    _init: function(){		
-        this.playlist = new Array();
+    _init: function(playlist){
+        this.playlist = playlist;
+        this.source = new Gst.ElementFactory.make("audiotestrc", "source");
+        this.sink = new Gst.ElementFactory.make("autoaudiosink", "output"); 
+        this.playbin = new Gst.ElementFactory.make("playbin2", null);
+        this.bus = this.playbin.get_bus();
+        
+        this.parent();
+        this.playlist.shuffle_mode_changed.connect(Lang.bind(this, this.on_playlist_shuffle_mode_changed);
     },
 
     getCurrentSongId: function(){
@@ -37,6 +48,10 @@ const Player = new Lang.Class({
     },
 
     getNextSongId: function(){
+    },
+    
+    play_file: function(fileLocation){
+        this.source.set_property('location', fileLocation);
     },
 
     play: function(){
