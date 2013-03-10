@@ -38,7 +38,7 @@ const Application = new Lang.Class({
         Extends: Gtk.Application,
         
         _init: function(){
-            this.player = new Player.Player();
+            //this.player = new Player.Player();
                 
                 //Gettext.bindtextdomain('gnome-music', Path.LOCALE_DIR);
             Gettext.textdomain('gnome-music');

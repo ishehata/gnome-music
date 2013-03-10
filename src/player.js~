@@ -64,7 +64,6 @@ const Player = new Lang.Class({
     },
 
     _set_ui: function(){
-        let box = new Gtk.Box();
         //let hBox = new Gtk.HBox();
        // this.hBox.get_style_context().add_class("music-player");
 /*
