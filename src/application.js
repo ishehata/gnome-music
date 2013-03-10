@@ -28,7 +28,7 @@ const Toolbar = imports.toolbar;
 const Mediabar = imports.mediabar;
 const Widgets = imports.widgets;
 const Views = imports.view;
-const Player = imports.player;
+//const Player = imports.player;
 const Gettext = imports.gettext;
 const _ = imports.gettext.gettext;
 
@@ -37,7 +37,7 @@ const Application = new Lang.Class({
         Extends: Gtk.Application,
         
         _init: function(){
-                this.player = new Player.Player();
+                //this.player = new Player.Player();
                 
                 //Gettext.bindtextdomain('gnome-music', Path.LOCALE_DIR);
                 Gettext.textdomain('gnome-music');

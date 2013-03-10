@@ -23,28 +23,132 @@ const Lang = imports.lang;
 const Gtk = imports.gi.Gtk;
 const Gst = imports.gi.Gst;
 
-const Mainloop = import.Mainloop;
+const Mainloop = imports.mainloop;
 
 
 const Player = new Lang.Class({
     Name: "Player",
-    Extends: Gst.Pipeline;
+    Extends: Gst.Pipeline,
 
     _init: function(playlist){
         this.playlist = playlist;
-        this.source = new Gst.ElementFactory.make("audiotestrc", "source");
-        this.sink = new Gst.ElementFactory.make("autoaudiosink", "output"); 
-        this.playbin = new Gst.ElementFactory.make("playbin2", null);
-        this.bus = this.playbin.get_bus();
+        //Gst.init(null, 0);
+        //this.source = new Gst.ElementFactory.make("audiotestrc", "source");
+        //this.sink = new Gst.ElementFactory.make("autoaudiosink", "output"); 
+        //this.playbin = new Gst.ElementFactory.make("playbin2", "playbin");
+        //this.playbin = null;
+        //this.bus = this.playbin.get_bus();
         
         this.parent();
-        this.playlist.shuffle_mode_changed.connect(Lang.bind(this, this.on_playlist_shuffle_mode_changed);
+        playlist.shuffle_mode_changed.connect(Lang.bind(this, this.on_playlist_shuffle_mode_changed));
     },
 
     _set_ui: function(){
+        let eventbox = new Gtk.EventBox();
+        eventbox.get_style_context().add_class("music-player");
+
+        let box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+        let alignment = new Gtk.Alignment(0, 0.5, 1, 1);
+        alignment.set_padding(15, 15, 15, 15);
+        alignment.add(box);
+        eventbox.add(alignment);
+
+        let toolbar_start = new Gtk.Box(Orientation.HORIZONTAL, 0);
+        toolbar_start.get_style_context().add_class(Gtk.STYLE_CLASS_LINKED);
+        let algmnt = new Gtk.Alignment(0, 0.5, 0, 0);
+        algmnt.add(toolbar_start);
+        box.pack_start(algmnt, false, false, 0);
+
+        let prev_btn = new Gtk.Button();
+        prev_btn.set_image(new Gtk.Image.from_icon_name("media-skip-backward-symbolic", Gtk.IconSize.BUTTON));
+        prev_btn.clicked.connect(Lang.bin(this, this.on_prev_btn_clicked));
+        toolbar_start.pack_start(prev_btn, false, false, 0);
+
+        let play_btn = new PlayPauseButton();
+        play_btn.toggled.connect(Lang.bind(this, this.on_play_btn_toggled));
+        toolbar_start.pack_start(play_btn, false, false, 0);
+
+        next_btn = new Gtk.Button();
+        next_btn.set_image(new Gtk.Image.from_icon_name ("media-skip-forward-symbolic", Gtk.IconSize.BUTTON));
+        next_btn.clicked.connect(Lang.bind(this, this.on_next_btn_clicked));
+        toolbar_start.pack_start(next_btn, false, false, 0);
+
+        let toolbar_song_info = new Gtk.Box (Orientation.HORIZONTAL, 0);
+        let algmnt = new Gtk.Alignment (0, 0.5, 0, 0);
+        algmnt.add (toolbar_song_info);
+        box.pack_start (algmnt, false, false, 10);
+
+        cover_img = new Gtk.Image();
+        toolbar_song_info.pack_start (cover_img, false, false, 5);
+
+        let databox = new Gtk.Box (Orientation.VERTICAL, 0);
+        toolbar_song_info.pack_start (databox, false, false, 0);
+
+        let title_lbl = new Gtk.Label (null);
+        databox.pack_start (title_lbl, false, false, 0);
+
+        let artist_lbl = new Gtk.Label (null);
+        artist_lbl.get_style_context ().add_class ("dim-label");
+        databox.pack_start (artist_lbl, false, false, 0);
+
+        let toolbar_center = new Gtk.Box (Orientation.HORIZONTAL, 0);
+        box.pack_start (toolbar_center, true, true, 10);
+
+        let progress_scale = new Gtk.Scale (Orientation.HORIZONTAL, null);
+        progress_scale.set_draw_value (false);
+        set_duration (1);
+        progress_scale.sensitive = false;
+        progress_scale.change_value.connect (on_progress_scale_change_value);
+        toolbar_center.pack_start (progress_scale);
+
+        let song_playback_time_lbl = new Gtk.Label ("00:00");
+        toolbar_center.pack_start (song_playback_time_lbl, false, false, 0);
+        let label = new Gtk.Label ("/");
+        toolbar_center.pack_start (label, false, false, 0);
+        let song_total_time_lbl = new Gtk.Label ("00:00");
+        toolbar_center.pack_start (song_total_time_lbl, false, false, 0);
+
+        let toolbar_end = new Gtk.Box (Orientation.HORIZONTAL, 5);
+        let alignment = new Gtk.Alignment (1, 0.5, 0, 0);
+        alignment.add (toolbar_end);
+        box.pack_start (alignment, false, false, 10);
+
+        let rate_btn = new Gtk.Button ();
+        rate_btn.set_image (new Gtk.Image.from_icon_name ("bookmark-new-symbolic", IconSize.BUTTON));
+        //rate_btn.clicked.connect ((button) => {});
+        toolbar_end.pack_start (rate_btn, false, false, 0);
+
+        let shuffle_btn = new Gtk.ToggleButton ();
+        shuffle_btn.set_image (new Gtk.Image.from_icon_name ("media-playlist-shuffle-symbolic", IconSize.BUTTON));
+        shuffle_btn.clicked.connect (on_shuffle_btn_clicked);
+        toolbar_end.pack_start (shuffle_btn, false, false, 0);
+
+        eventbox.show_all ();
     },
 
     load: function(){
+        set_duration (media.get_duration());
+        song_total_time_lbl.set_label (seconds_to_string (media.get_duration()));
+        progress_scale.sensitive = true;
+
+        // FIXME: site contains the album's name. It's obviously a hack to remove
+        var pixbuf = cache.lookup (ART_SIZE, media.get_author (), media.get_site ());
+        cover_img.set_from_pixbuf (pixbuf);
+
+        if (media.get_title () != null) {
+            title_lbl.set_label (media.get_title ());
+        }
+        else {
+            var url = media.get_url();
+            var file = GLib.File.new_for_path (url);
+            var basename = file.get_basename ();
+            var to_show = GLib.Uri.unescape_string (basename, null);
+            title_lbl.set_label (to_show);
+        }
+
+        artist_lbl.set_label (media.get_author());
+
+        uri = media.get_url();
     },
 
     uri: function(){
@@ -59,11 +163,11 @@ const Player = new Lang.Class({
     },
 
     _on_prev_btn_clicked: function(btn) {
-		this._need_previous();
+        this._need_previous();
     },
 
     _need_next: function(){
-		this.playlist.load_next();
+        this.playlist.load_next();
     },
 
     _need_previous: function(){
@@ -71,25 +175,46 @@ const Player = new Lang.Class({
     },
 
     _on_shuffle_btn_clicked: function(order){
-		this.playlist.set_shuffle(this.shuffle_btn.get_active());
+        this.playlist.set_shuffle(this.shuffle_btn.get_active());
     },
 
     _on_playlist_shuffle_mode_changed: function(mode){
-		this.shuffle_btn.set_active(mode);
+        this.shuffle_btn.set_active(mode);
     },
 
     _set_duration: function(duration){
-		this.scale.set_range(0.0, duration*60);
-		this.scale.set_value(0.0);
+        this.scale.set_range(0.0, duration*60);
+        this.scale.set_value(0.0);
     },
     
     _upadte_position: function(update){
+        if(update){
+            if(this.position_update_timeout == 0){
+                Timeout.add_seconds (1, Lang.bind(this, this.update_position_cb));
+            }
+        } else {
+            if(this.position_update_timeout != 0){
+                this.Source.remove (position_update_timeout);
+                this.position_update_timeout = 0;
+            }
+        }
     },
     
     _update_position_cb: function(){
+        let format = Gst.Format.TIME;
+        let duration = 0;
+
+        this.playbin.query_position (format, duration);
+        this.progress_scale.set_value (duration);
+        let seconds = duration / Gst.SECOND;
+        this.song_playback_time_lbl.set_label (seconds_to_string (seconds));
+
+        return true;
     },
     
-    _on_progress_scale_change_value(scroll, newValue){
+    _on_progress_scale_change_value: function(scroll, newValue){
+        this.playbin.seek_simple (Gst.Format.TIME, Gst.SeekFlags.FLUSH|Gst.SeekFlags.KEY_UNIT, newValue);
+        return false;
      },
 
 });

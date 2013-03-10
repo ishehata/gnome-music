@@ -21,7 +21,7 @@
  
 const Lang = imports.lang;
 
-const Gd = imports.gi.Gd;
+//const Gd = imports.gi.Gd;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
@@ -76,7 +76,8 @@ const MainToolbar = new Lang.Class({
 
 const Toolbar = new Lang.Class({
     Name: "Toolbar",
-    Extends: MainToolbar,
+    //Extends: MainToolbar,
+    Extends: Gtk.Toolbar,
     
     _init: function(application){
         this.app = application;
