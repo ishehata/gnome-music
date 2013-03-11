@@ -96,7 +96,7 @@ const Application = new Lang.Class({
                 this._window.set_default_size(640, 400);
                 this._window.show_menubar = false;
                 this.vbox.set_homogenous = false;
-                this.vbox.pack_start(this.toolbar, false, false, 0);
+                this.vbox.pack_start(this.toolbar.widget, false, false, 0);
                 this.vbox.pack_start(this.notebook, true, true, 0);
                 this.vbox.pack_start(this.player.eventbox, false, false, 0);
                 this._window.add(this.vbox);

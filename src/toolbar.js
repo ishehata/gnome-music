@@ -76,8 +76,8 @@ const MainToolbar = new Lang.Class({
 
 const Toolbar = new Lang.Class({
     Name: "Toolbar",
-//    Extends: MainToolbar,
-    Extends: Gtk.Toolbar,
+    Extends: MainToolbar,
+//    Extends: Gtk.Toolbar,
     
     _init: function(overlay) {
         this._overlay = overlay;
