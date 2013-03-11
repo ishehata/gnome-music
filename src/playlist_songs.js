@@ -15,81 +15,87 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Gtk;
+const Lang = imports.lang;
+const Gtk = imports.gi.Gtk;
 
-private class Music.PlaylistSongs {
-    public Gtk.Widget actor { get { return alignment; } }
+const ClickableLabel = imports.clickable_label;
 
-    private Music.Playlist playlist;
-
-    private Gtk.Alignment alignment;
-    private Gtk.Grid grid;
-
-    private int current_song = 0;
-
-    public PlaylistSongs (Music.Playlist playlist) {
-        this.playlist = playlist;
-        this.playlist.changed.connect (on_playlist_changed);
-        this.playlist.song_selected.connect (on_playlist_song_selected);
-
-        alignment = new Gtk.Alignment ((float)0.5, (float)0.5, 0, 0);
-        alignment.show_all ();
-    }
-
-    private void on_playlist_changed () {
-        clear_grid ();
-
-        foreach (Grl.Media media in playlist) {
-            var image = new Gtk.Image.from_icon_name ("media-playback-start-symbolic", IconSize.BUTTON);
-            image.hide();
-
-            var title = new Music.ClickableLabel (media.get_title());
-            title.set_alignment (0, (float)0.5);
-            title.clicked.connect (() => {
-                on_title_clicked (media);
-            });
-
-            var duration = media.get_duration ();
-            var length = new Gtk.Label (Music.seconds_to_string (duration));
-            length.set_alignment (1, (float)0.5);
-            length.get_style_context ().add_class ("dim-label");
-
+const PlayListSongs = new Lang.bind({
+    Name: "PlayListSongs",
+    
+    actor: function(){ return alignement; },
+    
+    _alignment: new Gtk.Alignment({xalign: 0.5, yalign: 0.5, xscale: 0, yscale: 0}),
+    
+    _grid: new Gtk.Grid(),
+    
+    _current_song: 0,
+    
+    _playlist:,
+    
+    _init: function(playlist) {
+        this._playlist = playlist;
+        this._playlist.connect("changed", Lang.bind(this, this._on_playlist_changed);
+        this._playlist.connect("song_selected", Lang.bind(this, this._on_playlist_song_selected);
+        
+        this._alignment.show_all();
+    },
+    
+    _on_play_list_changed() {
+        this.clear_grid();
+        
+        for(let media in this._playlist) {
+            let image = new Gtk.Image.new_from_icon_name("media-playback-start-symbolic", Gtk.IconSize.BUTTON);
+            image.hidden();
+            
+            let title = new ClickableLabel.ClickableLabel(media.get_title());
+            title.set_alignment(0, 0.5);
+            title.connect("clicked", Lang.bind(this, this._on_title_clicked, media));
+            
+            let duration = media.get_duration();
+            let length = new Gtk.Label({label : String(duration)});
+            length.set_alignment(1, 0.5);
+            length.get_style_context().add_class("dim-label");
+            
             grid.attach_next_to (image, null, Gtk.PositionType.BOTTOM, 1, 1);
             grid.attach_next_to (title, image, Gtk.PositionType.RIGHT, 1, 1);
             grid.attach_next_to (length, title, Gtk.PositionType.RIGHT, 1, 1);
-
+            
             image.hide();
             title.show();
             length.show();
         }
-    }
-    public void clear_grid () {
-        var child = alignment.get_child ();
-        if (child != null) {
-            alignment.remove (child);
+    },
+    
+    clear_grid: function() {
+        let child = this._alignment.get_child();
+        if(child != null) {
+            this._alignment.remove(child);
         }
         
-        grid = new Gtk.Grid ();
+        let grid = new Gtk.Grid();
         grid.set_column_spacing (10);
         grid.set_row_spacing (10);
-        alignment.add (grid);
+        this._alignment.add (grid);
         grid.show_all ();
-    }
+    },
+    
+    _on_title_clicked: function (media) {
+        this._playlist.select (media);
+    },
 
-    private void on_title_clicked (Grl.Media media) {
-        playlist.select (media);
-    }
-
-    private void on_playlist_song_selected (Grl.Media media, int index) {
+    _on_playlist_song_selected: function(media, index) {
         debug (current_song.to_string());
-        var image = grid.get_child_at(0, current_song);
+        let image = this._grid.get_child_at(0, this._current_song);
         if (image != null) {
             image.hide();
-        }
+        },
 
-        image = grid.get_child_at(0, index);
+        image = this._grid.get_child_at(0, index);
         image.show();
 
-        current_song = index;
+        this._current_song = index;
     }
-}
+
+});
+
