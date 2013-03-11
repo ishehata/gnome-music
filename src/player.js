@@ -137,12 +137,12 @@ const Player = new Lang.Class({
         box.pack_start (alignment2, false, false, 10);
 
         let rate_btn = new Gtk.Button ();
-        rate_btn.set_image (new Gtk.Image.new_from_icon_name ("bookmark-new-symbolic", Gtk.IconSize.BUTTON));
+        rate_btn.set_image (Gtk.Image.new_from_icon_name ("bookmark-new-symbolic", Gtk.IconSize.BUTTON));
         //rate_btn.clicked.connect ((button) => {});
         toolbar_end.pack_start (rate_btn, false, false, 0);
 
         this.shuffle_btn = new Gtk.ToggleButton ();
-        this.shuffle_btn.set_image (new Gtk.Image.new_from_icon_name ("media-playlist-shuffle-symbolic", Gtk.IconSize.BUTTON));
+        this.shuffle_btn.set_image (Gtk.Image.new_from_icon_name ("media-playlist-shuffle-symbolic", Gtk.IconSize.BUTTON));
         this.shuffle_btn.connect ("clicked", Lang.bind(this, this._on_shuffle_btn_clicked));
         toolbar_end.pack_start (this.shuffle_btn, false, false, 0);
 
