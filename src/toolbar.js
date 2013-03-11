@@ -50,26 +50,26 @@ const MainToolbar = new Lang.Class({
         //    this.widget.add(this._searchbar.widget);
     },
 
-    handleEvent: function(event) {
-        let res = this._searchbar.handleEvent(event);
+    handle_event: function(event) {
+        let res = this._searchbar.handle_event(event);
         return res;
     },
 
-    addSearchButton: function() {
-        let searchButton = new Gd.HeaderToggleButton({ symbolic_icon_name: 'edit-find-symbolic',
+    add_search_button: function() {
+        let search_button = new Gd.HeaderToggleButton({ symbolic_icon_name: 'edit-find-symbolic',
                                                        label: _("Search"),
                                                        action_name: 'app.search' });
-        this.toolbar.pack_end(searchButton);
+        this.toolbar.pack_end(search_button, false, false, 0);
         return searchButton;
     },
 
-    addBackButton: function() {
-        let iconName =
+    add_back_button: function() {
+        let icon_name =
             (this.toolbar.get_direction() == Gtk.TextDirection.RTL) ?
             'go-next-symbolic' : 'go-previous-symbolic';
-        let backButton = new Gd.HeaderSimpleButton({ symbolic_icon_name: iconName,
+        let back_button = new Gd.HeaderSimpleButton({ symbolic_icon_name: icon_name,
                                                      label: _("Back") });
-        this.toolbar.pack_start(backButton);
+        this.toolbar.pack_start(back_button, false, false, 0);
         return backButton;
     }
 });
@@ -87,6 +87,7 @@ const Toolbar = new Lang.Class({
         this._selectionMenu = null;
 
         this.parent();
+        this._populate_for_overview();
      },
 /*
         // setup listeners to mode changes that affect the toolbar layout
@@ -226,19 +227,21 @@ const Toolbar = new Lang.Class({
         this._setToolbarTitle();
         Application.application.change_action_state('search', GLib.Variant.new('b', false));
     },
+*/
 
-    _populateForOverview: function() {
-        this._checkCollectionBackButton();
-        this.addSearchButton();
+    _populate_for_overview: function() {
+        //this._check_collection_back_button();
+        //this.add_search_button();
 
-        let selectionButton = new Gd.HeaderSimpleButton({ symbolic_icon_name: 'object-select-symbolic',
+        let selection_button = new Gd.HeaderSimpleButton({ symbolic_icon_name: 'object-select-symbolic',
                                                           label: _("Select Items") });
-        this.toolbar.pack_end(selectionButton);
-        selectionButton.connect('clicked', Lang.bind(this,
+        this.toolbar.pack_end(selection_button);
+        selection_button.connect('clicked', Lang.bind(this,
             function() {
-                Application.selectionController.setSelectionMode(true);
+                //Application.selectionController.setSelectionMode(true);
             }));
-
+},
+/*
         // connect to active collection changes while in this mode
         this._collectionId =
             Application.collectionManager.connect('active-changed',
@@ -285,7 +288,7 @@ const Toolbar = new Lang.Class({
             Application.application.change_action_state('search', GLib.Variant.new('b', true));
     },
 */
-    createSearchbar: function() {
+    create_searchbar: function() {
         // create the dropdown for the search bar, it's hidden by default
         let dropdown = new Searchbar.Dropdown();
         this._overlay.add_overlay(dropdown.widget);
