@@ -19,8 +19,10 @@
  *
  */
 
-const Application = imports.application;
+
+const GIRepository = imports.gi.GIRepository;
+const App = imports.application;
 
 
-let app = new Application.Application();
+let app = new App.Application();
 app.run(ARGV);
