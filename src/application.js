@@ -55,7 +55,7 @@ const Application = new Lang.Class({
                       flags: Gio.ApplicationFlags.FLAGS_NONE,
                       inactivity_timeout: 12000 });
 
-            //this._settings = new GLib.Settings ("org.gnome.Music");
+            //this._settings = new Gio.Settings({ schema: 'org.gnome.music' });
             this.browse_history = new BrowseHistory.BrowseHistory ();
 
             //Gettext.bindtextdomain('gnome-music', Path.LOCALE_DIR);
@@ -80,7 +80,7 @@ const Application = new Lang.Class({
             //settings.gtk_application_prefer_dark_theme = true;
         },
 
-        _setup_view: function(){
+        _build_app: function(){
                 this._window = new Gtk.ApplicationWindow({application: this,
                                                           title: _("Music"),
                                                           });
@@ -88,7 +88,8 @@ const Application = new Lang.Class({
                 this.vbox = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL, spacing: 0});
                 this.toolbar = new Toolbar.Toolbar(this);
                 this.notebook = new Gtk.Notebook();
-                this.player = new Player.Player();
+                this.playlist = new Playlist.Playlist();
+                this.player = new Player.Player(this.playlist);
 
                 this.views = new Array();
                 
@@ -150,7 +151,7 @@ const Application = new Lang.Class({
         },
 
         _onStartup: function(){
-                this._setup_view();
+                this._build_app();
         },
 });
 

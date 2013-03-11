@@ -22,7 +22,8 @@
 const Lang = imports.lang;
 const Gtk = imports.gi.Gtk;
 const Gst = imports.gi.Gst;
-const Grl = imports.gi.Grl; //??
+const GLib = imports.gi.GLib;
+const Grl = imports.gi.Grl; 
 
 const Playlist = new Lang.Class({
     Name: "Playlist",
@@ -32,14 +33,14 @@ const Playlist = new Lang.Class({
         this.currentIndex = 0;
         this._shuffle = false;
         this._source_list = new Array();
-        this.settings = new GLib.Settings("org.gnome.Music");
+        //this._settings = new Gio.Settings({ schema: 'org.gnome.music' });
         /* convert to js
          public signal void song_selected (Grl.Media media, int index);
          public signal void changed ();
          public signal void shuffle_mode_changed (bool mode);
          */ 
         
-        this.settings.changed.connect (Lang.bind(this, this._on_settings_key_changed));
+        //this._settings.changed.connect (Lang.bind(this, this._on_settings_key_changed));
     },    
     
     get_shuffle: function(){
@@ -48,7 +49,7 @@ const Playlist = new Lang.Class({
     
     set_shuffle: function(value){
         this._shuffle = value;
-        this.settings.set_boolean("shuffle", value);
+        //this._settings.set_boolean("shuffle", value);
     },
     
     select: function(media){

@@ -51,8 +51,8 @@ const Player = new Lang.Class({
     Name: "Player",
     //Extends: GLib.Object,
 
-    _init: function(){//parameter: playlist
-        //this.playlist = playlist;
+    _init: function(playlist) {
+        this.playlist = playlist;
         //this.cache = new AlbumArtCache.AlbumArtCache().get_default();
         //Gst.init(null, 0);
         //this.source = new Gst.ElementFactory.make("audiotestrc", "source");
@@ -141,10 +141,10 @@ const Player = new Lang.Class({
         //rate_btn.clicked.connect ((button) => {});
         toolbar_end.pack_start (rate_btn, false, false, 0);
 
-        let shuffle_btn = new Gtk.ToggleButton ();
-        shuffle_btn.set_image (new Gtk.Image.new_from_icon_name ("media-playlist-shuffle-symbolic", Gtk.IconSize.BUTTON));
-        shuffle_btn.connect ("clicked", Lang.bind(this, this._on_shuffle_btn_clicked));
-        toolbar_end.pack_start (shuffle_btn, false, false, 0);
+        this.shuffle_btn = new Gtk.ToggleButton ();
+        this.shuffle_btn.set_image (new Gtk.Image.new_from_icon_name ("media-playlist-shuffle-symbolic", Gtk.IconSize.BUTTON));
+        this.shuffle_btn.connect ("clicked", Lang.bind(this, this._on_shuffle_btn_clicked));
+        toolbar_end.pack_start (this.shuffle_btn, false, false, 0);
 
         this.eventbox.show_all(); 
     },
