@@ -77,7 +77,7 @@ const Application = new Lang.Class({
                 this.vbox.set_homogenous = false;
                 this.vbox.pack_start(this.toolbar, false, false, 0);
                 this.vbox.pack_start(this.notebook, true, true, 0);
-                this.vbox.pack_start(this.player, false, false, 0);                               
+                //this.vbox.pack_start(this.player, false, false, 0);                               
                 this._window.add(this.vbox);
 
                 this.views[0] = new Views.Artists();

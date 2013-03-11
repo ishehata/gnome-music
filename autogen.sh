@@ -1,17 +1,26 @@
-#!/bin/sh
+#!/bin/bash
+# Run this to generate all the initial makefiles, etc.
 
-set -e
+srcdir=`dirname $0`
+test -z "$srcdir" && srcdir=.
 
-test -n "$srcdir" || srcdir=`dirname "$0"`
-test -n "$srcdir" || srcdir=.
+ACLOCAL_FLAGS="-I libgd ${ACLOCAL_FLAGS}"
+PKG_NAME="gnome-weather"
 
-olddir=`pwd`
-cd "$srcdir"
+test -f $srcdir/configure.ac || {
+    echo -n "**Error**: Directory "\`$srcdir\'" does not look like the"
+    echo " top-level gnome-weather directory"
+    exit 1
+}
 
-autoreconf --force --install
+which gnome-autogen.sh || {
+    echo "You need to install gnome-common from GNOME Git (or from"
+    echo "your OS vendor's package manager)."
+    exit 1
+}
 
-cd "$olddir"
-
-if test -z "$NOCONFIGURE"; then
-    "$srcdir"/configure "$@"
-fi
+(cd "$srcdir" ;
+test -d m4 || mkdir m4/ ;
+git submodule update --init --recursive ;
+)
+. gnome-autogen.sh
