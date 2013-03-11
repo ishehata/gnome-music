@@ -41,15 +41,17 @@ const Application = new Lang.Class({
                       flags: Gio.ApplicationFlags.FLAGS_NONE,
                       inactivity_timeout: 12000 });
             this.player = new Player.Player();
-                
-           //Gettext.bindtextdomain('gnome-music', Path.LOCALE_DIR);
-           //Gettext.textdomain('gnome-music');
-             
-                this.connect('activate', Lang.bind(this, this._onActivate));
-                this.connect('startup', Lang.bind(this, this._onStartup));
+
+            //Gettext.bindtextdomain('gnome-music', Path.LOCALE_DIR);
+            //Gettext.textdomain('gnome-music');
+            //this._build_app_menu();
+            //this._define_style_and_themes();
+            
+            this.connect('activate', Lang.bind(this, this._onActivate));
+            this.connect('startup', Lang.bind(this, this._onStartup));
        },
        
-       _defineStyleAndThemes : function() {
+       _define_style_and_themes : function() {
             let provider = new Gtk.CssProvider();
             provider.load_from_path('resources/gtk-style.css');
             Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(),
@@ -57,27 +59,25 @@ const Application = new Lang.Class({
                                                      600);
 
             let settings = Gtk.Settings.get_default();
-            settings.gtk_application_prefer_dark_theme = true;
+            //settings.gtk_application_prefer_dark_theme = true;
         },
 
         _buildUI: function(){
                 this._window = new Gtk.ApplicationWindow({application: this,
                                                           title: _("Music"),
                                                           hide_titlebar_when_maximized: true});
-               // this._defineStyleAndThemes();                                                        
 
                 this.vbox = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL, spacing: 0});
                 this.toolbar = new Toolbar.Toolbar(this);
                 this.notebook = new Gtk.Notebook();
-                //this.mediabar = new Mediabar.Mediabar();
+
                 this.views = new Array();
                 
                 this._window.set_default_size(640, 400);
                 this.vbox.set_homogenous = false;
                 this.vbox.pack_start(this.toolbar, false, false, 0);
                 this.vbox.pack_start(this.notebook, true, true, 0);
-         //      this.vbox.pack_start(this.player.eventbox, false, false, 0);                               
-  //              this.vbox.pack_end(this.mediabar, false, false, 0);
+                this.vbox.pack_start(this.player.eventbox, false, false, 0);                               
                 this._window.add(this.vbox);
 
                 this.views[0] = new Views.Artists();
@@ -99,7 +99,7 @@ const Application = new Lang.Class({
 
         }, 
         
-        _buildMenu: function(){
+        _build_app_menu: function(){
             let builder = new Gtk.Builder();
             
             builder.add_from_file('resources/app-menu.ui'); //fix this
@@ -125,7 +125,6 @@ const Application = new Lang.Class({
 
         _onStartup: function(){
                 this._buildUI();
-                this._buildMenu();
         },
 });
 

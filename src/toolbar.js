@@ -21,16 +21,18 @@
  
 const Lang = imports.lang;
 
-//const Gd = imports.gi.Gd;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
+const Pkg = imports.pkg;
 
 const Gettext = imports.gettext;
 const _ = imports.gettext.gettext;
 
 const Widgets = imports.widgets;
+
+Pkg.initSubmodule('libgd');
 
 const MainToolbar = new Lang.Class({
     Name: 'MainToolbar',
@@ -76,8 +78,8 @@ const MainToolbar = new Lang.Class({
 
 const Toolbar = new Lang.Class({
     Name: "Toolbar",
-    //Extends: MainToolbar,
-    Extends: Gtk.Toolbar,
+    Extends: MainToolbar,
+    //Extends: Gtk.Toolbar,
     
     _init: function(application){
         this.app = application;
