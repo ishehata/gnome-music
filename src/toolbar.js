@@ -76,7 +76,9 @@ const MainToolbar = new Lang.Class({
 
 const Toolbar = new Lang.Class({
     Name: "Toolbar",
-    Extends: MainToolbar,
+//    Extends: MainToolbar,
+    Extends: Gtk.Toolbar,
+    
     _init: function(overlay) {
         this._overlay = overlay;
         this._collBackButton = null;
@@ -85,8 +87,10 @@ const Toolbar = new Lang.Class({
         this._selectionMenu = null;
 
         this.parent();
-
+     },
+/*
         // setup listeners to mode changes that affect the toolbar layout
+
         this._searchStringId = Application.searchController.connect('search-string-changed',
             Lang.bind(this, this._setToolbarTitle));
         this._searchTypeId = Application.searchTypeManager.connect('active-changed',
@@ -98,6 +102,7 @@ const Toolbar = new Lang.Class({
         this._selectionModeId = Application.selectionController.connect('selection-mode-changed',
             Lang.bind(this, this._resetToolbarMode));
         this._resetToolbarMode();
+        
 
         this.widget.connect('destroy', Lang.bind(this,
             function() {
@@ -279,12 +284,14 @@ const Toolbar = new Lang.Class({
         if (Application.searchController.getString() != '')
             Application.application.change_action_state('search', GLib.Variant.new('b', true));
     },
-
+*/
     createSearchbar: function() {
         // create the dropdown for the search bar, it's hidden by default
         let dropdown = new Searchbar.Dropdown();
         this._overlay.add_overlay(dropdown.widget);
 
         return new Searchbar.OverviewSearchbar(dropdown);
-    }
+    },
+ 
 });
+

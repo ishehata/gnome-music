@@ -49,7 +49,7 @@ const PlayPauseButton = new Lang.Class({
 
 const Player = new Lang.Class({
     Name: "Player",
-    Extends: GLib.Object,
+    //Extends: GLib.Object,
 
     _init: function(){//parameter: playlist
         //this.playlist = playlist;
@@ -62,18 +62,19 @@ const Player = new Lang.Class({
         //this.bus = this.playbin.get_bus();
         
         //this.parent();
-        this._buildUI();
+        //this._setup_view();
         //playlist.shuffle_mode_changed.connect(Lang.bind(this, this.on_playlist_shuffle_mode_changed));
     },
 
-    _buildUI: function() {
-    
-        /*
+    _setup_view: function() {
+        /*this.eventbox = new Gtk.EventBox ();
+        this.eventbox.get_style_context ().add_class ("music-player");
+        
         let box = new Gtk.Box({orientation : Gtk.Orientation.HORIZONTAL, spacing : 0});
         let alignment = new Gtk.Alignment({xalign:0, yalign:0.5, xscale:1, yscale:1});
         alignment.set_padding(15, 15, 15, 15);
         alignment.add(box);
-        /*
+        
         let toolbar_start = new Gtk.Box({orientation : Gtk.Orientation.HORIZONTAL, spacing : 0});
         toolbar_start.get_style_context().add_class(Gtk.STYLE_CLASS_LINKED);
         let algmnt = new Gtk.Alignment({xalign:0, yalign:0.5, xscale:1, yscale:1});
@@ -143,7 +144,8 @@ const Player = new Lang.Class({
         shuffle_btn.set_image (new Gtk.Image.from_icon_name ("media-playlist-shuffle-symbolic", IconSize.BUTTON));
         shuffle_btn.connect ("clicked", Lang.bind(this, this.on_shuffle_btn_clicked));
         toolbar_end.pack_start (shuffle_btn, false, false, 0);
-        */
+        
+        this.eventbox.show_all(); */
     },
 
     load: function(media){

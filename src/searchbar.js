@@ -126,4 +126,4 @@ const Dropdown = new Lang.Class({
         this.hide();
         this.widget.show_all();
     },
-
+});

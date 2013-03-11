@@ -62,7 +62,7 @@ const Application = new Lang.Class({
             //settings.gtk_application_prefer_dark_theme = true;
         },
 
-        _buildUI: function(){
+        _setup_view: function(){
                 this._window = new Gtk.ApplicationWindow({application: this,
                                                           title: _("Music"),
                                                           hide_titlebar_when_maximized: true});
@@ -77,7 +77,7 @@ const Application = new Lang.Class({
                 this.vbox.set_homogenous = false;
                 this.vbox.pack_start(this.toolbar, false, false, 0);
                 this.vbox.pack_start(this.notebook, true, true, 0);
-                //this.vbox.pack_start(this.player, false, false, 0);                               
+                //this.vbox.pack_start(this.player.eventbox, false, false, 0);                               
                 this._window.add(this.vbox);
 
                 this.views[0] = new Views.Artists();
@@ -124,7 +124,7 @@ const Application = new Lang.Class({
         },
 
         _onStartup: function(){
-                this._buildUI();
+                this._setup_view();
         },
 });
 
