@@ -25,7 +25,7 @@ const PlayListSongs = new Lang.bind({
     
     actor: function(){ return alignement; },
     
-    _alignment: new Gtk.Alignment({xalign: 0.5, yalign: 0.5, xscale: 0, yscale: 0}),
+    _alignment: null,
     
     _grid: new Gtk.Grid(),
     
@@ -37,6 +37,7 @@ const PlayListSongs = new Lang.bind({
         this._playlist = playlist;
         this._playlist.connect("changed", Lang.bind(this, this._on_playlist_changed);
         this._playlist.connect("song_selected", Lang.bind(this, this._on_playlist_song_selected);
+        this._alignment = new Gtk.Alignment({xalign: 0.5, yalign: 0.5, xscale: 0, yscale: 0}),
         
         this._alignment.show_all();
     },

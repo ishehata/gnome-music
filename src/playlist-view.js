@@ -15,50 +15,55 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Gtk;
-using Gee;
+const Lang = imports.lang;
+const Gtk = imports.gi.Gtk;
 
-private class Music.PlaylistView {
-    public Gtk.Widget actor { get { return scrolled_window; } }
+const AlbumInfoBox = imports.album_info_box;
+const PlaylistSongs = imports.playlist_songs;
 
-    private Music.Playlist playlist;
-
-    private Gtk.ScrolledWindow scrolled_window;
-    private Music.AlbumInfoBox album_info_box;
-    private Music.PlaylistSongs playlist_songs;
-
-    public PlaylistView (Music.Playlist playlist) {
-        this.playlist = playlist;
-
-        setup_view ();
-    }
-
-    private void setup_view () {
-        var layout = new Gtk.Box (Orientation.HORIZONTAL, 20);
-        layout.set_homogeneous (false);
-
-        var alignment = new Gtk.Alignment ((float)0.5, (float)0.5, 0, 0);
-        alignment.add (layout);
-
+const PlayListView = new Lang.Class({
+    Name: "PlayListView",
+    
+    actor: function(){ return this._scrolled_window; },
+    
+    _playlist: null,
+    
+    _scrolled_window: null, 
+    
+    _album_info_box: null,
+    
+    playlist_songs: null,
+    
+    _init: function (playlist) {
+        this._playlist = playlist;
+        
+        this._setup_view();
+    },
+    
+    _setup_view: function() {
+        let layout = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL, spacing: 0});
+        layout.set_homogeneous(false);
+        
+        let alignment = new Gtk.Alignment({xalign: 0.5, yalign: 0.5});
+        
         /* Album Info Box */
-        album_info_box = new Music.AlbumInfoBox ();
-        layout.pack_start (album_info_box.actor, false, false);
-
+        this._album_info_box = new AlbumInfoBox.AlbumInfoBox ();
+        layout.pack_start (this._album_info_box.actor, false, false);
+        
         /* Playlist songs Box */
         playlist_songs = new Music.PlaylistSongs (playlist);
         layout.pack_start (playlist_songs.actor, false, false);
 
-        scrolled_window = new Gtk.ScrolledWindow (null, null);
-        scrolled_window.hscrollbar_policy = Gtk.PolicyType.NEVER;
-        scrolled_window.vscrollbar_policy = Gtk.PolicyType.AUTOMATIC;
-        scrolled_window.add_with_viewport (alignment);
+        this._scrolled_window = new Gtk.ScrolledWindow (null, null);
+        this._scrolled_window.hscrollbar_policy = Gtk.PolicyType.NEVER;
+        this._scrolled_window.vscrollbar_policy = Gtk.PolicyType.AUTOMATIC;
+        this._scrolled_window.add_with_viewport (this._alignment);
 
         scrolled_window.show_all ();
-    }
-
-    public void load (Grl.Media media) {
-        album_info_box.load (media);
-
-        playlist.load_album (media);
-    }
-}
+    },
+    
+    load: function(media) {
+        this._album_info_box.load (media);
+        this._playlist.load_album (media);
+    },
+});
