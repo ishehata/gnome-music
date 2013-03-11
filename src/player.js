@@ -97,55 +97,55 @@ const Player = new Lang.Class({
         toolbar_start.pack_start(next_btn, false, false, 0);
 
         let toolbar_song_info = new Gtk.Box({orientation : Gtk.Orientation.HORIZONTAL, spacing : 0});
-        //let algmnt = new Gtk.Alignment({xalign:0, yalign:0.5, xscale:0, yscale:0});
-        //algmnt.add (toolbar_song_info);
-        //box.pack_start (algmnt, false, false, 10);
+        let algmnt1 = new Gtk.Alignment({xalign:0, yalign:0.5, xscale:0, yscale:0});
+        algmnt1.add (toolbar_song_info);
+        box.pack_start (algmnt1, false, false, 10);
 
         this.cover_img = new Gtk.Image();
         toolbar_song_info.pack_start (this.cover_img, false, false, 5);
 
-        /*let databox = new Gtk.Box({orientation : Gtk.Orientation.VERTICAL, spacing : 0});
+        let databox = new Gtk.Box({orientation : Gtk.Orientation.VERTICAL, spacing : 0});
         toolbar_song_info.pack_start (databox, false, false, 0);
 
-        this.title_lbl = new Gtk.Label (null);
+        this.title_lbl = new Gtk.Label ({label: ""});
         databox.pack_start (this.title_lbl, false, false, 0);
 
-        let artist_lbl = new Gtk.Label (null);
+        let artist_lbl = new Gtk.Label ({label: ""});
         artist_lbl.get_style_context ().add_class ("dim-label");
         databox.pack_start (artist_lbl, false, false, 0);
 
         let toolbar_center = new Gtk.Box({orientation : Gtk.Orientation.HORIZONTAL, spacing : 0});
         box.pack_start (toolbar_center, true, true, 10);
 
-        this.progress_scale = new Gtk.Scale (Orientation.HORIZONTAL, null);
+        this.progress_scale = new Gtk.Scale ({orientation : Gtk.Orientation.HORIZONTAL});
         this.progress_scale.set_draw_value (false);
         this._set_duration (1);
         this.progress_scale.sensitive = false;
-        this.progress_scale.connect ("change_value", Lang.bind(this, this.on_progress_scale_change_value));
-        toolbar_center.pack_start (this.progress_scale);
+        this.progress_scale.connect ("change_value", Lang.bind(this, this._on_progress_scale_change_value));
+        toolbar_center.pack_start (this.progress_scale, true, true, 0);
 
-        this.song_playback_time_lbl = new Gtk.Label({label:"00:00"});
+        this.song_playback_time_lbl = new Gtk.Label({label : "00:00"});
         toolbar_center.pack_start (this.song_playback_time_lbl, false, false, 0);
-        let label = new Gtk.Label ("/");
+        let label = new Gtk.Label ({label : "/"});
         toolbar_center.pack_start (label, false, false, 0);
         this.song_total_time_lbl = new Gtk.Label({label:"00:00"});
         toolbar_center.pack_start (this.song_total_time_lbl, false, false, 0);
 
         let toolbar_end = new Gtk.Box({orientation : Gtk.Orientation.HORIZONTAL, spacing : 5});
-        let alignment = new Gtk.Alignment({xalign:1, yalign:0.5, xscale:0, yscale:0});
-        alignment.add (toolbar_end);
-        box.pack_start (alignment, false, false, 10);
+        let alignment2 = new Gtk.Alignment({xalign:1, yalign:0.5, xscale:0, yscale:0});
+        alignment2.add (toolbar_end);
+        box.pack_start (alignment2, false, false, 10);
 
         let rate_btn = new Gtk.Button ();
-        rate_btn.set_image (new Gtk.Image.from_icon_name ("bookmark-new-symbolic", IconSize.BUTTON));
+        rate_btn.set_image (new Gtk.Image.new_from_icon_name ("bookmark-new-symbolic", Gtk.IconSize.BUTTON));
         //rate_btn.clicked.connect ((button) => {});
         toolbar_end.pack_start (rate_btn, false, false, 0);
 
         let shuffle_btn = new Gtk.ToggleButton ();
-        shuffle_btn.set_image (new Gtk.Image.from_icon_name ("media-playlist-shuffle-symbolic", IconSize.BUTTON));
-        shuffle_btn.connect ("clicked", Lang.bind(this, this.on_shuffle_btn_clicked));
+        shuffle_btn.set_image (new Gtk.Image.new_from_icon_name ("media-playlist-shuffle-symbolic", Gtk.IconSize.BUTTON));
+        shuffle_btn.connect ("clicked", Lang.bind(this, this._on_shuffle_btn_clicked));
         toolbar_end.pack_start (shuffle_btn, false, false, 0);
-        */
+
         this.eventbox.show_all(); 
     },
 
@@ -205,8 +205,8 @@ const Player = new Lang.Class({
     },
 
     _set_duration: function(duration){
-        this.scale.set_range(0.0, duration*60);
-        this.scale.set_value(0.0);
+        this.progress_scale.set_range(0.0, duration*60);
+        this.progress_scale.set_value(0.0);
     },
     
     _upadte_position: function(update){
