@@ -104,8 +104,8 @@ const Application = new Lang.Class({
                 this.vbox.pack_start(this.player.eventbox, false, false, 0);
                 this._window.add(this.vbox);
 
-                this.views[0] = new Views.Artists(this.toolbar.add_mode("Albums"));
-                this.views[1] = new Views.Albums(this.toolbar.add_mode("Artists"));
+                this.views[0] = new Views.Albums(this.toolbar.add_mode("Albums"));
+                this.views[1] = new Views.Artists(this.toolbar.add_mode("Artists"));
                 this.views[2] = new Views.Songs(this.toolbar.add_mode("Songs"));
                 this.views[3] = new Views.Playlists(this.toolbar.add_mode("Playlists"));
                 this.notebook.set_show_tabs(false);
@@ -115,7 +115,7 @@ const Application = new Lang.Class({
                     this.notebook.append_page(view, new Gtk.Label({label: view.button.label}));
                     view.button.connect('toggled', Lang.bind(this, this._toggleView, i));
                 }
-                this.notebook.set_current_page(1);
+                this.notebook.set_current_page(0);
 
                 //this.toolbar.show_all();
                 this.notebook.show_all();
