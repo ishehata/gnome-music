@@ -36,16 +36,14 @@ const AlbumArtCache = new Lang.Class({
     Extends: GLib.Object,
     
     
-    _init: function(){    
-        
-        
+    _init: function() {
         this.parent();
     },
     
     get_default: function() {
         if (instance == null) {
-                instance = new AlbumArtCache();
-            }
+            instance = new AlbumArtCache();
+        }
 
         return instance;
     },

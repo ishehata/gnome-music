@@ -48,7 +48,7 @@ const Player = new Lang.Class({
     Name: "Player",
     Extends: GLib.Object,
 
-    _init: function(playlist){
+    _init: function(){//parameter: playlist
         //this.playlist = playlist;
         this.cache = new AlbumArtCache.AlbumArtCache().get_default();
         //Gst.init(null, 0);
@@ -59,15 +59,16 @@ const Player = new Lang.Class({
         //this.bus = this.playbin.get_bus();
         
         this.parent();
-        this._set_ui();        
+        this._buildUI();
         //playlist.shuffle_mode_changed.connect(Lang.bind(this, this.on_playlist_shuffle_mode_changed));
     },
 
-    _set_ui: function(){
-        let box = new Gtk.Box();
-        //let hBox = new Gtk.HBox();
-       // this.hBox.get_style_context().add_class("music-player");
-/*
+    _buildUI: function() {
+    
+        this.eventbox = new Gtk.EventBox();
+    
+        this.eventbox.get_style_context().add_class("music-player");
+
         let box = new Gtk.Box({orientation : Gtk.Orientation.HORIZONTAL, spacing : 0});
         let alignment = new Gtk.Alignment({xalign:0, yalign:0.5, xscale:1, yscale:1});
         alignment.set_padding(15, 15, 15, 15);
@@ -105,8 +106,8 @@ const Player = new Lang.Class({
         let databox = new Gtk.Box({orientation : Gtk.Orientation.VERTICAL, spacing : 0});
         toolbar_song_info.pack_start (databox, false, false, 0);
 
-        let title_lbl = new Gtk.Label (null);
-        databox.pack_start (title_lbl, false, false, 0);
+        this.title_lbl = new Gtk.Label (null);
+        databox.pack_start (this.title_lbl, false, false, 0);
 
         let artist_lbl = new Gtk.Label (null);
         artist_lbl.get_style_context ().add_class ("dim-label");
@@ -119,7 +120,7 @@ const Player = new Lang.Class({
         this.progress_scale.set_draw_value (false);
         this._set_duration (1);
         this.progress_scale.sensitive = false;
-        this.progress_scale.change_value.connect (on_progress_scale_change_value);
+        this.progress_scale.connect ("change_value", Lang.bind(this, this.on_progress_scale_change_value));
         toolbar_center.pack_start (this.progress_scale);
 
         this.song_playback_time_lbl = new Gtk.Label({label:"00:00"});
@@ -143,11 +144,12 @@ const Player = new Lang.Class({
         shuffle_btn.set_image (new Gtk.Image.from_icon_name ("media-playlist-shuffle-symbolic", IconSize.BUTTON));
         shuffle_btn.connect ("clicked", Lang.bind(this, this.on_shuffle_btn_clicked));
         toolbar_end.pack_start (shuffle_btn, false, false, 0);
-*/
-        //this.hBox.show_all ();
+
+        this.eventbox.show_all ();
+       
     },
 
-    _load: function(){
+    load: function(media){
         this._set_duration (media.get_duration());
         this.song_total_time_lbl.set_label (this.seconds_to_string (media.get_duration()));
         this.progress_scale.sensitive = true;
@@ -164,14 +166,13 @@ const Player = new Lang.Class({
             let file = GLib.File.new_for_path (url);
             let basename = file.get_basename ();
             let to_show = GLib.Uri.unescape_string (basename, null);
-            title_lbl.set_label (to_show);
+            this.title_lbl.set_label (to_show);
         }
 
         artist_lbl.set_label (media.get_author());
 
         let uri = media.get_url();
     },
-
     uri: function(){
     },
     

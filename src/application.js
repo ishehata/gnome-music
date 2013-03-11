@@ -52,21 +52,21 @@ const Application = new Lang.Class({
        },
        
        _defineStyleAndThemes : function() {
-        let provider = new Gtk.CssProvider();
-        provider.load_from_path('resources/gtk-style.css');
-        Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(),
-                                                 provider,
-                                                 600);
+            let provider = new Gtk.CssProvider();
+            provider.load_from_path('resources/gtk-style.css');
+            Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(),
+                                                     provider,
+                                                     600);
 
-        let settings = Gtk.Settings.get_default();
-        settings.gtk_application_prefer_dark_theme = true;
-    },
+            let settings = Gtk.Settings.get_default();
+            settings.gtk_application_prefer_dark_theme = true;
+        },
 
         _buildUI: function(){
                 this._window = new Gtk.ApplicationWindow({application: this,
                                                           title: _("Music"),
                                                           hide_titlebar_when_maximized: true});
-                this._defineStyleAndThemes();                                                        
+               // this._defineStyleAndThemes();                                                        
                 this.vbox = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL, spacing: 0});
                 //this.toolbar = new Toolbar.Toolbar(this);
                 this.notebook = new Gtk.Notebook();

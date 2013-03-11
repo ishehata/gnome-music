@@ -1,0 +1,7 @@
+1. define signals "How to ?"
+2. in player.js check why "buildUI" gives "Segmentation Fault and other style errors".
+3. solve Gd problem
+4. Inluce "App" in collection_view.js
+5. Grl ??
+6. is it right to replace vala ENUMS with objects "{}" ?
+7. javascript (playlist-songs, playlist-view)
