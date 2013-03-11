@@ -37,7 +37,7 @@ const PlayPauseButton = new Lang.Class({
     Name: "PlayPauseButton",
     Extends: Gtk.ToggleButton,
     
-    _init: function(){        
+    _init: function() {
         this.play_image = Gtk.Image.new_from_icon_name("media-playback-start-symbolic", Gtk.IconSize.BUTTON);
         this.pause_image = Gtk.Image.new_from_icon_name("media-playback-pause-symbolic", Gtk.IconSize.BUTTON);                
               
@@ -49,7 +49,7 @@ const PlayPauseButton = new Lang.Class({
 
 const Player = new Lang.Class({
     Name: "Player",
-    Extends: GLib.Object,
+    //Extends: GLib.Object,
 
     _init: function(){//parameter: playlist
         //this.playlist = playlist;
@@ -61,19 +61,20 @@ const Player = new Lang.Class({
         //this.playbin = null;
         //this.bus = this.playbin.get_bus();
         
-        this.parent();
-        //this._setup_view();
+        //this.parent();
+        this._setup_view();
         //playlist.shuffle_mode_changed.connect(Lang.bind(this, this.on_playlist_shuffle_mode_changed));
     },
 
     _setup_view: function() {
-        /*this.eventbox = new Gtk.EventBox ();
+        this.eventbox = new Gtk.EventBox ();
         this.eventbox.get_style_context ().add_class ("music-player");
         
         let box = new Gtk.Box({orientation : Gtk.Orientation.HORIZONTAL, spacing : 0});
         let alignment = new Gtk.Alignment({xalign:0, yalign:0.5, xscale:1, yscale:1});
         alignment.set_padding(15, 15, 15, 15);
         alignment.add(box);
+        this.eventbox.add (alignment);
         
         let toolbar_start = new Gtk.Box({orientation : Gtk.Orientation.HORIZONTAL, spacing : 0});
         toolbar_start.get_style_context().add_class(Gtk.STYLE_CLASS_LINKED);
@@ -96,14 +97,14 @@ const Player = new Lang.Class({
         toolbar_start.pack_start(next_btn, false, false, 0);
 
         let toolbar_song_info = new Gtk.Box({orientation : Gtk.Orientation.HORIZONTAL, spacing : 0});
-        let algmnt = new Gtk.Alignment({xalign:0, yalign:0.5, xscale:0, yscale:0});
-        algmnt.add (toolbar_song_info);
-        box.pack_start (algmnt, false, false, 10);
+        //let algmnt = new Gtk.Alignment({xalign:0, yalign:0.5, xscale:0, yscale:0});
+        //algmnt.add (toolbar_song_info);
+        //box.pack_start (algmnt, false, false, 10);
 
         this.cover_img = new Gtk.Image();
         toolbar_song_info.pack_start (this.cover_img, false, false, 5);
 
-        let databox = new Gtk.Box({orientation : Gtk.Orientation.VERTICAL, spacing : 0});
+        /*let databox = new Gtk.Box({orientation : Gtk.Orientation.VERTICAL, spacing : 0});
         toolbar_song_info.pack_start (databox, false, false, 0);
 
         this.title_lbl = new Gtk.Label (null);
@@ -144,8 +145,8 @@ const Player = new Lang.Class({
         shuffle_btn.set_image (new Gtk.Image.from_icon_name ("media-playlist-shuffle-symbolic", IconSize.BUTTON));
         shuffle_btn.connect ("clicked", Lang.bind(this, this.on_shuffle_btn_clicked));
         toolbar_end.pack_start (shuffle_btn, false, false, 0);
-        
-        this.eventbox.show_all(); */
+        */
+        this.eventbox.show_all(); 
     },
 
     load: function(media){

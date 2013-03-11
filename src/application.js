@@ -31,6 +31,7 @@ const Widgets = imports.widgets;
 const Views = imports.view;
 const Player = imports.player;
 const BrowseHistory = imports.browse_history;
+const Playlist = imports.playlist;
 
 const Gettext = imports.gettext;
 const _ = imports.gettext.gettext;
@@ -96,7 +97,7 @@ const Application = new Lang.Class({
                 this.vbox.set_homogenous = false;
                 this.vbox.pack_start(this.toolbar, false, false, 0);
                 this.vbox.pack_start(this.notebook, true, true, 0);
-                //this.vbox.pack_start(this.player.eventbox, false, false, 0);
+                this.vbox.pack_start(this.player.eventbox, false, false, 0);
                 this._window.add(this.vbox);
 
                 this.views[0] = new Views.Artists();
@@ -113,7 +114,7 @@ const Application = new Lang.Class({
                 
                 //this.toolbar.show_all();
                 this.notebook.show_all();
-                //this.mediabar.show_all();
+                this.player.eventbox.show_all();
                 this.vbox.show_all();
 
         },

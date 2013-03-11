@@ -25,7 +25,7 @@ const Gst = imports.gi.Gst;
 const Grl = imports.gi.Grl; //??
 
 const Playlist = new Lang.Class({
-    Name: "Playlist";
+    Name: "Playlist",
     
     _init: function(){
         this.list = new Array();
@@ -54,18 +54,21 @@ const Playlist = new Lang.Class({
     select: function(media){
         if(list.indexOf(2) >= 0) {
             this.currentIndex = list.indexOf(2); 
+        }
     },
     
     load_next: function(){
         if(this.currentIndex+ 1 < this.list.length){
             this.currentIndex++;
-            this.song_selected(this.list[this.currentIndex], this.currentIndex) 
+            this.song_selected(this.list[this.currentIndex], this.currentIndex);
+        }
     },
     
     load_previous: function(){
         if(this.currentIndex > 0) {
             this.currentIndex--;
-            this.song_selected(this.list[this.currentIndex], this.currentIndex) 
+            this.song_selected(this.list[this.currentIndex], this.currentIndex);
+        }
     },
     
     load_album: function(){
@@ -113,6 +116,7 @@ const Playlist = new Lang.Class({
     _on_settings_key_changed: function(key){
         if(key == "shuffle"){
             this.shuffle_mode_changed(this.settings.get_boolean("shuffle"));
+        }
     },
 
 });

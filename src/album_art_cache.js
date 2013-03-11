@@ -20,7 +20,6 @@
  */
 
 const Lang = imports.lang; 
-//const Gee = imports.gi.Gee;
 const Gdk = imports.gi.Gdk;
 const GLib = imports.gi.GLib;
 
