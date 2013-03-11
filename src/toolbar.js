@@ -83,9 +83,9 @@ const Toolbar = new Lang.Class({
         this.app = application;
         
         this.parent();
-        //this.get_style_context().add_class('music-topbar');
+        this.get_style_context().add_class('music-topbar');
         this.get_style_context().add_class('menubar');
-        this.set_size_request(-1, 42);
+        this.set_size_request(-1, 32);
         this._buildToolbar();
     },
     
@@ -97,10 +97,11 @@ const Toolbar = new Lang.Class({
         let leftBox   = new Gtk.Box();
         let centerBox   = new Gtk.Box();
         let rightBox   = new Gtk.Box();
+
         let backBtn = new Widgets.ToolbarButton(null, "go-previous-symbolic", true);
         let newBtn = new Widgets.ToolbarButton("New", null, true);
         let selectBtn = new Widgets.ToolbarButton(null, "object-select-symbolic", true);
-//        let selectBtn = new Widgets.ToolbarButton(null, "emblem-default-symbolic", true);
+        //let selectBtn = new Widgets.ToolbarButton(null, "emblem-default-symbolic", true);
         let searchBtn = new Widgets.ToolbarButton(null, "edit-find-symbolic", true);
         let leftSpacer  = new Gtk.ToolItem();
         let rightSpacer = new Gtk.ToolItem();
@@ -110,27 +111,51 @@ const Toolbar = new Lang.Class({
         this.btns['songs'] = new Widgets.ToolbarButton("Songs", null, true);
         this.btns['playlists']  = new Widgets.ToolbarButton("Playlists", null, true);
         this.currentToggled = null;
-                
+
         centerBox.get_style_context().add_class("linked");
+        centerBox.set_homogenous = true;
+        centerBox.pack_start(new Gtk.Label(), true, false, 0);
         for(var btn in this.btns)
         {
-            centerBox.pack_start(this.btns[btn], false, false, 0);          
+            centerBox.pack_start(this.btns[btn], true, false, 0);          
         }       
-         
-        this.box.pack_start(backBtn, false, false, 3);
+        centerBox.pack_start(new Gtk.Label(), true, false, 0);
+        centerBox.set_halign(Gtk.Align.CENTER)
+        
+        leftBox.pack_start(backBtn, true, true, 0);
+        leftBox.pack_start(newBtn, true, true, 0);
+
+        rightBox.pack_end(selectBtn, true, true, 0);
+        rightBox.pack_end(searchBtn, true, true, 0);
+
+        /*this.box.pack_start(backBtn, false, false, 3);
         this.box.pack_start(newBtn, false, false, 3);
         this.box.pack_start(new Gtk.Label({label : ""}), true, true, 0);
-        this.box.pack_start(centerBox, false, false, 3);
+        this.box.pack_start(centerBox, true, true, 3);
         this.box.pack_start(new Gtk.Label({label : ""}), true, true, 0);
         this.box.pack_start(searchBtn, false, false, 3);
         this.box.pack_start(selectBtn, false, false, 3);
-        //this.vbox.pack_start( , false, false, 3);
-        this.add(this.box);
+        //this.vbox.pack_start( , false, false, 3);*/
+        
+        let size_group = new Gtk.SizeGroup();
+        size_group.add_widget(leftItem);
+        size_group.add_widget(rightItem);
+        
+        leftItem.add(leftBox);
+        this.insert(leftItem, -1);
+        
+        centerItem.add(centerBox);
+        this.insert(centerItem, -1);
+        centerItem.set_size_request(-1, 32);
+        
+        rightItem.add(rightBox);
+        this.insert(rightItem, -1);
         
         this.btns['artists'].connect('clicked', Lang.bind(this, this._onToggle, "artists"));
         this.btns['albums'].connect('clicked', Lang.bind(this, this._onToggle, "albums"));
         this.btns['songs'].connect('clicked', Lang.bind(this, this._onToggle, "songs"));
         this.btns['playlists'].connect('clicked', Lang.bind(this, this._onToggle, "playlists"));
+
     },
     
     toggleOffCurrentToggled: function(){

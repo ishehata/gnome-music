@@ -50,7 +50,7 @@ const Albums = new Lang.Class({
     _init: function(){
         this.parent();
         this.box = new Gtk.HBox();
-        let img = new Gtk.Image.new_from_icon_name("audio-x-generic-symbolic", Gtk.IconSize.BUTTON);
+        let img = Gtk.Image.new_from_icon_name("audio-x-generic-symbolic", Gtk.IconSize.BUTTON);
         let label = new Gtk.Label({label : "No albums were found !"});
 
         this.pack_start(new Gtk.Label({label : ""}), true, true, 6);

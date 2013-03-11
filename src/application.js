@@ -26,7 +26,6 @@ const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Toolbar = imports.toolbar;
-const Mediabar = imports.mediabar;
 const Widgets = imports.widgets;
 const Views = imports.view;
 const Player = imports.player;
@@ -38,15 +37,14 @@ const Application = new Lang.Class({
         Extends: Gtk.Application,
         
         _init: function(){
-            this.player = new Player.Player();
-                
-                //Gettext.bindtextdomain('gnome-music', Path.LOCALE_DIR);
-            Gettext.textdomain('gnome-music');
-                
-                this.parent({ application_id: 'org.gnome.Music',
+            this.parent({ application_id: 'org.gnome.Music',
                       flags: Gio.ApplicationFlags.FLAGS_NONE,
                       inactivity_timeout: 12000 });
-
+            this.player = new Player.Player();
+                
+           //Gettext.bindtextdomain('gnome-music', Path.LOCALE_DIR);
+           //Gettext.textdomain('gnome-music');
+             
                 this.connect('activate', Lang.bind(this, this._onActivate));
                 this.connect('startup', Lang.bind(this, this._onStartup));
        },
@@ -67,19 +65,21 @@ const Application = new Lang.Class({
                                                           title: _("Music"),
                                                           hide_titlebar_when_maximized: true});
                // this._defineStyleAndThemes();                                                        
+
                 this.vbox = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL, spacing: 0});
-                //this.toolbar = new Toolbar.Toolbar(this);
+                this.toolbar = new Toolbar.Toolbar(this);
                 this.notebook = new Gtk.Notebook();
-                this.mediabar = new Mediabar.Mediabar();
+                //this.mediabar = new Mediabar.Mediabar();
                 this.views = new Array();
                 
                 this._window.set_default_size(640, 400);
                 this.vbox.set_homogenous = false;
-     //           this.vbox.pack_start(this.toolbar, false, false, 0);
+                this.vbox.pack_start(this.toolbar, false, false, 0);
                 this.vbox.pack_start(this.notebook, true, true, 0);
          //      this.vbox.pack_start(this.player.eventbox, false, false, 0);                               
   //              this.vbox.pack_end(this.mediabar, false, false, 0);
                 this._window.add(this.vbox);
+
                 this.views[0] = new Views.Artists();
                 this.views[1] = new Views.Albums();
                 this.views[2] = new Views.Songs();
@@ -90,11 +90,13 @@ const Application = new Lang.Class({
                 this.notebook.append_page(this.views[2], new Gtk.Label({label: "Songs"}));
                 this.notebook.append_page(this.views[3], new Gtk.Label({label: "Playlists"}));
                 this.notebook.set_current_page(1);
+
                 
                 //this.toolbar.show_all();
                 this.notebook.show_all();
-                this.mediabar.show_all();
+                //this.mediabar.show_all();
                 this.vbox.show_all();
+
         }, 
         
         _buildMenu: function(){

@@ -50,7 +50,7 @@ const ToolbarButton = new Lang.Class({
         if(label != null){
             this.set_label(label);
         } else {
-            this.set_image(new Gtk.Image.new_from_icon_name(iconName, Gtk.IconSize.BUTTON));            
+            this.set_image(Gtk.Image.new_from_icon_name(iconName, Gtk.IconSize.BUTTON));            
         }
         this.set_size_request(34, 34);        
         this.set_can_focus(false);
@@ -71,7 +71,7 @@ const SymbolicToolButton = new Lang.Class({
         //image.set_from_gicon(icon, Gtk.IconSize.MENU);
         //image.show();
         //this.add(image);
-        this.set_image(new Gtk.Image.new_from_icon_name(iconName, Gtk.IconSize.BUTTON));
+        this.set_image(Gtk.Image.new_from_icon_name(iconName, Gtk.IconSize.BUTTON));
         this.set_size_request(34, 34);
         this.set_can_focus(false);
         if ( setRelief === false ) {
