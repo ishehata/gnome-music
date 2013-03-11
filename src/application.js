@@ -25,12 +25,25 @@ const Gtk = imports.gi.Gtk;
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
+
 const Toolbar = imports.toolbar;
 const Widgets = imports.widgets;
 const Views = imports.view;
 const Player = imports.player;
+const BrowseHistory = imports.browse_history;
+
 const Gettext = imports.gettext;
 const _ = imports.gettext.gettext;
+
+var AppState = {
+    ARTISTS: 0,
+    ALBUMS: 1,
+    SONGS: 2,
+    PLAYLISTS: 3,
+    PLAYLIST: 4,
+    PLAYLIST_NEW: 5,
+    
+};
 
 const Application = new Lang.Class({
         Name: 'Music',
@@ -40,7 +53,9 @@ const Application = new Lang.Class({
             this.parent({ application_id: 'org.gnome.Music',
                       flags: Gio.ApplicationFlags.FLAGS_NONE,
                       inactivity_timeout: 12000 });
-            this.player = new Player.Player();
+
+            //this._settings = new GLib.Settings ("org.gnome.Music");
+            this.browse_history = new BrowseHistory.BrowseHistory ();
 
             //Gettext.bindtextdomain('gnome-music', Path.LOCALE_DIR);
             //Gettext.textdomain('gnome-music');
@@ -49,6 +64,8 @@ const Application = new Lang.Class({
             
             this.connect('activate', Lang.bind(this, this._onActivate));
             this.connect('startup', Lang.bind(this, this._onStartup));
+            //this._settings.connect("changed", Lang.bind(this, this._on_settings_key_changed));
+            //this.browse_history.connect ("changed", Lang.bind(this, this._on_browse_history_changed));
        },
        
        _define_style_and_themes : function() {
@@ -65,19 +82,21 @@ const Application = new Lang.Class({
         _setup_view: function(){
                 this._window = new Gtk.ApplicationWindow({application: this,
                                                           title: _("Music"),
-                                                          hide_titlebar_when_maximized: true});
+                                                          });
 
                 this.vbox = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL, spacing: 0});
                 this.toolbar = new Toolbar.Toolbar(this);
                 this.notebook = new Gtk.Notebook();
+                this.player = new Player.Player();
 
                 this.views = new Array();
                 
                 this._window.set_default_size(640, 400);
+                this._window.show_menubar = false;
                 this.vbox.set_homogenous = false;
                 this.vbox.pack_start(this.toolbar, false, false, 0);
                 this.vbox.pack_start(this.notebook, true, true, 0);
-                //this.vbox.pack_start(this.player.eventbox, false, false, 0);                               
+                //this.vbox.pack_start(this.player.eventbox, false, false, 0);
                 this._window.add(this.vbox);
 
                 this.views[0] = new Views.Artists();
@@ -97,7 +116,13 @@ const Application = new Lang.Class({
                 //this.mediabar.show_all();
                 this.vbox.show_all();
 
-        }, 
+        },
+        
+        _on_settings_key_changed: function(){
+        },
+        
+        _on_browse_history_changed: function(){
+        },
         
         _build_app_menu: function(){
             let builder = new Gtk.Builder();

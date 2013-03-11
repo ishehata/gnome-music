@@ -17,7 +17,7 @@
 
 const Lang = imports.lang;
 
-const BrowseHistory: new Lang.Class({
+const BrowseHistory = new Lang.Class({
     Name: "BrowseHistory",
     
     _init: function(){

@@ -49,7 +49,7 @@ const PlayPauseButton = new Lang.Class({
 
 const Player = new Lang.Class({
     Name: "Player",
-    //Extends: GLib.Object,
+    Extends: GLib.Object,
 
     _init: function(){//parameter: playlist
         //this.playlist = playlist;
@@ -61,7 +61,7 @@ const Player = new Lang.Class({
         //this.playbin = null;
         //this.bus = this.playbin.get_bus();
         
-        //this.parent();
+        this.parent();
         //this._setup_view();
         //playlist.shuffle_mode_changed.connect(Lang.bind(this, this.on_playlist_shuffle_mode_changed));
     },
