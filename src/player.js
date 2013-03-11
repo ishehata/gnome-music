@@ -21,11 +21,11 @@
 
 const Lang = imports.lang;
 const Gtk = imports.gi.Gtk;
+const Gd = imports.gi.Gd;
 const Gst = imports.gi.Gst;
 const GLib = imports.gi.GLib;
-const Pkg = imports.pkg;
 
-Pkg.initSubmodule('libgd');
+//pkg.initSubmodule('libgd');
 
 const Mainloop = imports.mainloop;
 const AlbumArtCache = imports.album_art_cache;

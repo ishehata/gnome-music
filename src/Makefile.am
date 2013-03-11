@@ -16,7 +16,7 @@ dist_js_DATA = \
 	clickable_label.js \
 	gnome-music.in \
 	main.js \
-	pkg.js \
+	package.js \
 	playlist.js \
 	playlist-view.js \
 	searchbar.js \

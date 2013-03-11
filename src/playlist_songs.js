@@ -23,7 +23,7 @@ const ClickableLabel = imports.clickable_label;
 const PlayListSongs = new Lang.bind({
     Name: "PlayListSongs",
     
-    actor: function(){ return alignement; },
+    actor: function(){ return this._alignement; },
     
     _alignment: null,
     
