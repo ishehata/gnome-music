@@ -28,7 +28,7 @@ const Default = new Lang.Class({
     Name: "DefaultView",
     Extends: Gtk.Box,
     
-    _init: function(){
+    _init: function(button){
         this.parent();
     },
 });
@@ -37,8 +37,9 @@ const Artists = new Lang.Class({
     Name: "ArtistsView",
     Extends: Gtk.Box,
     
-    _init: function(){
+    _init: function(button){
         this.parent();
+        this.button = button;
     },
     
 });
@@ -47,9 +48,10 @@ const Albums = new Lang.Class({
     Name: "AlbumsView",
     Extends: Gtk.Box,
     
-    _init: function(){
+    _init: function(button){
         this.parent();
         this.box = new Gtk.HBox();
+        this.button = button;
         let img = Gtk.Image.new_from_icon_name("audio-x-generic-symbolic", Gtk.IconSize.BUTTON);
         let label = new Gtk.Label({label : "No albums were found !"});
 
@@ -66,8 +68,9 @@ const Songs = new Lang.Class({
     Name: "SongsView",
     Extends: Gtk.Box,
     
-    _init: function(){
+    _init: function(button){
         this.parent();
+        this.button = button;
     },
     
 });
@@ -76,8 +79,9 @@ const Playlists = new Lang.Class({
     Name: "PlaylistsView",
     Extends: Gtk.Box,
     
-    _init: function(){
+    _init: function(button){
         this.parent();
+        this.button = button;
     },
     
 });

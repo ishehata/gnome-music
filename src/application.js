@@ -25,6 +25,7 @@ const Gtk = imports.gi.Gtk;
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
+const Gd = imports.gi.Gd;
 
 const Toolbar = imports.toolbar;
 const Widgets = imports.widgets;
@@ -86,7 +87,9 @@ const Application = new Lang.Class({
                                                           });
 
                 this.vbox = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL, spacing: 0});
-                this.toolbar = new Toolbar.Toolbar(this);
+                this.toolbar = new Gd.MainToolbar({ icon_size: Gtk.IconSize.MENU,
+                                             show_modes: true,
+                                             vexpand: false });
                 this.notebook = new Gtk.Notebook();
                 this.playlist = new Playlist.Playlist();
                 this.player = new Player.Player(this.playlist);
@@ -96,30 +99,30 @@ const Application = new Lang.Class({
                 this._window.set_default_size(640, 400);
                 this._window.show_menubar = false;
                 this.vbox.set_homogenous = false;
-                this.vbox.pack_start(this.toolbar.widget, false, false, 0);
+                this.vbox.pack_start(this.toolbar, false, false, 0);
                 this.vbox.pack_start(this.notebook, true, true, 0);
                 this.vbox.pack_start(this.player.eventbox, false, false, 0);
                 this._window.add(this.vbox);
 
-                this.views[0] = new Views.Artists();
-                this.views[1] = new Views.Albums();
-                this.views[2] = new Views.Songs();
-                this.views[3] = new Views.Playlists();
+                this.views[0] = new Views.Artists(this.toolbar.add_mode("Albums"));
+                this.views[1] = new Views.Albums(this.toolbar.add_mode("Artists"));
+                this.views[2] = new Views.Songs(this.toolbar.add_mode("Songs"));
+                this.views[3] = new Views.Playlists(this.toolbar.add_mode("Playlists"));
                 this.notebook.set_show_tabs(false);
-                this.notebook.append_page(this.views[0], new Gtk.Label({label: "Artists"}));
-                this.notebook.append_page(this.views[1], new Gtk.Label({label: "Albums"}));
-                this.notebook.append_page(this.views[2], new Gtk.Label({label: "Songs"}));
-                this.notebook.append_page(this.views[3], new Gtk.Label({label: "Playlists"}));
+
+                for (var i in this.views) {
+                    var view = this.views[i];
+                    this.notebook.append_page(view, new Gtk.Label({label: view.button.label}));
+                    view.button.connect('toggled', Lang.bind(this, this._toggleView, i));
+                }
                 this.notebook.set_current_page(1);
 
-                
                 //this.toolbar.show_all();
                 this.notebook.show_all();
                 this.player.eventbox.show_all();
                 this.vbox.show_all();
-
         },
-        
+
         _on_settings_key_changed: function(){
         },
         
@@ -128,12 +131,17 @@ const Application = new Lang.Class({
         
         _build_app_menu: function(){
             let builder = new Gtk.Builder();
-            
             builder.add_from_file('resources/app-menu.ui'); //fix this
             let menu = builder.get_object('app-menu');
             this.set_app_menu(menu);
         },
-        
+
+        _toggleView: function(btn, i) {
+            if (btn.active) {
+                this.notebook.set_current_page(i);
+            }
+        },
+
         switchToView: function(view){
             if (view == 'artists')
                 this.notebook.set_current_page(0);
