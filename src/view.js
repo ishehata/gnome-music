@@ -23,21 +23,32 @@ const Gtk = imports.gi.Gtk;
 const Gio = imports.gi.Gio;
 const Widgets = imports.widgets;
 
+
 const ViewContainer = new Lang.Class({
     Name: "ViewContainer",
-
-    _init: function(button){
+    _init: function(){
         this.widget = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
         this.view = new Gd.MainView({ shadow_type : Gtk.ShadowType.NONE});
         this._model = new ViewModel();
         
         this.widget.add(this.view);
         this.widget.show_all();
+    }
+});
+
+
+const Default = new Lang.Class({
+    Name: "DefaultView",
+    Extends: Gtk.Box,
+    
+    _init: function(title){
+        this.parent();
+
     },
 });
 
 const ViewModel = new Lang.Class ({
-    Name: "ViewModel"
+    Name: "ViewModel",
     
     _init: function() {
         this.model = new Gtk.ListStore(
@@ -57,9 +68,9 @@ const Artists = new Lang.Class({
     Name: "ArtistsView",
     Extends: Gtk.Box,
     
-    _init: function(button){
+    _init: function(title){
         this.parent();
-        this.button = button;
+        this.title = title;
     },
     
 });
@@ -68,10 +79,10 @@ const Albums = new Lang.Class({
     Name: "AlbumsView",
     Extends: Gtk.Box,
     
-    _init: function(button){
+    _init: function(title){
         this.parent();
         this.box = new Gtk.HBox();
-        this.button = button;
+        this.title = title;
         let img = Gtk.Image.new_from_icon_name("audio-x-generic-symbolic", Gtk.IconSize.BUTTON);
         let label = new Gtk.Label({label : "No albums were found !"});
 
@@ -88,9 +99,9 @@ const Songs = new Lang.Class({
     Name: "SongsView",
     Extends: Gtk.Box,
     
-    _init: function(button){
+    _init: function(title){
         this.parent();
-        this.button = button;
+        this.title = title;
     },
     
 });
@@ -99,9 +110,9 @@ const Playlists = new Lang.Class({
     Name: "PlaylistsView",
     Extends: Gtk.Box,
     
-    _init: function(button){
+    _init: function(title){
         this.parent();
-        this.button = button;
+        this.title = title;
     },
     
 });

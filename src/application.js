@@ -86,37 +86,34 @@ const Application = new Lang.Class({
                                                           });
 
                 this.vbox = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL, spacing: 0});
-                this.toolbar = new Gd.MainToolbar({ icon_size: Gtk.IconSize.MENU,
-                                             show_modes: true,
-                                             vexpand: false });
-                this._stack = new Gd.Stack();
+
                 this.playlist = new Playlist.Playlist();
                 this.player = new Player.Player(this.playlist);
 
                 this.views = new Array();
                 
+                this.toolbar = new Toolbar.Toolbar();
+                this._stack = new Gd.Stack({visible: true});
+                
                 this._window.set_default_size(640, 400);
-                this._window.show_menubar = false;
-                this.vbox.set_homogenous = false;
                 this.vbox.pack_start(this.toolbar, false, false, 0);
                 this.vbox.pack_start(this._stack, true, true, 0);
                 this.vbox.pack_start(this.player.eventbox, false, false, 0);
                 this._window.add(this.vbox);
 
-                this.views[0] = new Views.Albums(this.toolbar.add_mode("Albums"));
-                this.views[1] = new Views.Artists(this.toolbar.add_mode("Artists"));
-                this.views[2] = new Views.Songs(this.toolbar.add_mode("Songs"));
-                this.views[3] = new Views.Playlists(this.toolbar.add_mode("Playlists"));
+                this.views[0] = new Views.Albums("Albums");
+                this.views[1] = new Views.Artists("Artists");
+                this.views[2] = new Views.Songs("Songs");
+                this.views[3] = new Views.Playlists("Playlists");
+
 
                 for (var i in this.views) {
-                    this._stack.add(this.views[i]);
-                    this.views[i].button.connect('toggled',
-                        Lang.bind(this, this._toggleView, i));
+                    this._stack.add_titled (this.views[i],
+                                            this.views[i].title,
+                                            this.views[i].title);
                 }
-
-
-                //this.toolbar.show_all();
-                this._stack.show_all();
+                this.toolbar.set_stack (this._stack);
+                this.toolbar.show_all();
                 this.player.eventbox.show_all();
                 this.vbox.show_all();
         },
