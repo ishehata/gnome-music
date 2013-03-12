@@ -23,13 +23,34 @@ const Gtk = imports.gi.Gtk;
 const Gio = imports.gi.Gio;
 const Widgets = imports.widgets;
 
-const Default = new Lang.Class({
-    Name: "DefaultView",
-    Extends: Gtk.Box,
-    
+const ViewContainer = new Lang.Class({
+    Name: "ViewContainer",
+
     _init: function(button){
-        this.parent();
+        this.widget = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
+        this.view = new Gd.MainView({ shadow_type : Gtk.ShadowType.NONE});
+        this._model = new ViewModel();
+        
+        this.widget.add(this.view);
+        this.widget.show_all();
     },
+});
+
+const ViewModel = new Lang.Class ({
+    Name: "ViewModel"
+    
+    _init: function() {
+        this.model = new Gtk.ListStore(
+            [ GObject.TYPE_STRING,
+              GObject.TYPE_STRING,
+              GObject.TYPE_STRING,
+              GObject.TYPE_STRING,
+              Gdk.GdkPixpuf.Pixpuf,
+              GObject.TYPE_LONG]);
+        this.model.set_sort_column_id(Gd.MainColumns.MTIME,
+                                      Gtk.SortType.DESCENDING);
+    },
+    
 });
 
 const Artists = new Lang.Class({
