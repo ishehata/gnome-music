@@ -20,14 +20,21 @@
  
 const Lang = imports.lang;
 const Gtk = imports.gi.Gtk;
+const Gdk = imports.gi.Gdk;
+const GdkPixbuf = imports.gi.GdkPixbuf;
+const GObject = imports.gi.GObject;
+const Gd = imports.gi.Gd;
 const Gio = imports.gi.Gio;
 const Widgets = imports.widgets;
 
 
 const ViewContainer = new Lang.Class({
     Name: "ViewContainer",
+    Extend: Gtk.Grid,
+    
     _init: function(){
-        this.widget = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
+        this.parent();
+        this.set_orientation(Gtk.Orientation.VERTICAL );
         this.view = new Gd.MainView({ shadow_type : Gtk.ShadowType.NONE});
         this._model = new ViewModel();
         
@@ -56,10 +63,32 @@ const ViewModel = new Lang.Class ({
               GObject.TYPE_STRING,
               GObject.TYPE_STRING,
               GObject.TYPE_STRING,
-              Gdk.GdkPixpuf.Pixpuf,
+              GdkPixbuf.Pixbuf,
               GObject.TYPE_LONG]);
         this.model.set_sort_column_id(Gd.MainColumns.MTIME,
                                       Gtk.SortType.DESCENDING);
+    },
+    
+});
+
+const Albums = new Lang.Class({
+    Name: "AlbumsView",
+    Extends: ViewContainer,
+    
+    _init: function(title){
+        this.parent();
+        
+        let box = new Gtk.HBox();
+        this.title = title;
+        let img = Gtk.Image.new_from_icon_name("audio-x-generic-symbolic", Gtk.IconSize.BUTTON);
+        let label = new Gtk.Label({label : "No albums were found !"});
+
+        box.pack_start(new Gtk.Label({label : ""}), true, true, 6);
+        box.pack_start(img, false, false, 6);
+        box.pack_start(label, false, false, 6);
+        box.pack_start(new Gtk.Label({label : ""}), true, true, 6);
+        this.view.attach(box, 0 ,1, 0, 1);
+        this.wdiget.show_all();
     },
     
 });
@@ -75,29 +104,9 @@ const Artists = new Lang.Class({
     
 });
 
-const Albums = new Lang.Class({
-    Name: "AlbumsView",
-    Extends: Gtk.Box,
-    
-    _init: function(title){
-        this.parent();
-        this.box = new Gtk.HBox();
-        this.title = title;
-        let img = Gtk.Image.new_from_icon_name("audio-x-generic-symbolic", Gtk.IconSize.BUTTON);
-        let label = new Gtk.Label({label : "No albums were found !"});
-
-        this.pack_start(new Gtk.Label({label : ""}), true, true, 6);
-        this.pack_start(img, false, false, 6);
-        this.pack_start(label, false, false, 6);
-        this.pack_start(new Gtk.Label({label : ""}), true, true, 6);
-        this.show_all();
-    },
-    
-});
-
 const Songs = new Lang.Class({
     Name: "SongsView",
-    Extends: Gtk.Box,
+    Extends: ViewContainer,
     
     _init: function(title){
         this.parent();

@@ -1,4 +1,4 @@
-/*/*
+/*
  * Copyright (c) 2013 Eslam Mostafa.
  *
  * Gnome Music is free software; you can Public License as published by the
@@ -37,13 +37,6 @@ const AlbumArtCache = new Lang.Class({
     _init: function() {
         this.parent();
     },
-    
-    get_default: function() {
-        if (instance == null) {
-            instance = new AlbumArtCache();
-        }
 
-        return instance;
-    },
 });
 
