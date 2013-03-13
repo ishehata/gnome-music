@@ -34,7 +34,7 @@ const ViewContainer = new Lang.Class({
     
     _init: function(){
         this.parent();
-        this.set_orientation(Gtk.Orientation.VERTICAL );
+        //this.set_orientation(Gtk.Orientation.VERTICAL );
         this.view = new Gd.MainView({ shadow_type : Gtk.ShadowType.NONE});
         this._model = new ViewModel();
         
