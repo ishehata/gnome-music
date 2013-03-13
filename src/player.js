@@ -38,7 +38,7 @@ const PlayPauseButton = new Lang.Class({
     
     _init: function() {
         this.play_image = Gtk.Image.new_from_icon_name("media-playback-start-symbolic", Gtk.IconSize.BUTTON);
-        this.pause_image = Gtk.Image.new_from_icon_name("media-playback-pause-symbolic", Gtk.IconSize.BUTTON);                
+        this.pause_image = Gtk.Image.new_from_icon_name("media-playback-pause-symbolic", Gtk.IconSize.BUTTON);
               
         this.parent();
         this.set_image(this.play_image);

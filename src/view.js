@@ -31,19 +31,50 @@ const Tracker = imports.gi.Tracker;
 const tracker = Tracker.SparqlConnection.get (null);
 
 
+
+const EmptyView = new Lang.Class ({
+    Name: "EmptyView",
+    Extends: Gtk.HBox,
+    
+    _init: function(icon_name, lbl) {
+        let box = new Gtk.HBox();
+        let image = Gtk.Image.new_from_icon_name(icon_name, Gtk.IconSize.MENU);
+        let label = new Gtk.Label({ label : lbl });
+        
+        this.parent();
+        
+        box.pack_start(image, false, false, 6);
+        box.pack_start(label, false, false, 6);
+        
+        this.pack_start(new Gtk.Label({ label : ""}), true, true, 0);
+        this.pack_start(box, false, false, 6);
+        this.pack_start(new Gtk.Label({ label : ""}), true, true, 0);
+        
+        this.show_all();
+    },
+});
+
+
 const ViewModel = new Lang.Class ({
     Name: "ViewModel",
     
     _init: function() {
-        this.model = new Gtk.ListStore(
+        this._model = Gtk.ListStore.new(
             [ GObject.TYPE_STRING,
-              GObject.TYPE_STRING,
-              GObject.TYPE_STRING,
-              GObject.TYPE_STRING,
-              GdkPixbuf.Pixbuf,
-              GObject.TYPE_LONG]);
-        this.model.set_sort_column_id(Gd.MainColumns.MTIME,
-                                      Gtk.SortType.DESCENDING);
+//              GObject.TYPE_STRING,
+  //            GObject.TYPE_STRING,
+    //          GObject.TYPE_STRING,
+      //        GdkPixbuf.Pixbuf,
+        //      GObject.TYPE_LONG]
+        ]);
+        //this.model.set_sort_column_id(Gd.MainColumns.MTIME,
+                        //              Gtk.SortType.DESCENDING);
+    },
+    
+    is_empty: function() {
+        if(this._model.get_iter_first()[0]);
+            return false;
+        return true;
     },
     
 });
@@ -51,7 +82,7 @@ const ViewModel = new Lang.Class ({
 
 const ViewContainer = new Lang.Class({
     Name: "ViewContainer",
-    Extends: Gtk.Grid,
+    Extends: Gtk.Box,
     
     _init: function(title, header_bar){
         this.parent();
@@ -82,17 +113,6 @@ const ViewContainer = new Lang.Class({
     },
 });
 
-const Artists = new Lang.Class({
-    Name: "ArtistsView",
-    Extends: ViewContainer,
-    
-    _init: function(header_bar){
-        this.parent("Artists", header_bar);
-    },
-    
-});
-
-
 const Albums = new Lang.Class({
     Name: "AlbumsView",
     Extends: ViewContainer,
@@ -103,9 +123,31 @@ const Albums = new Lang.Class({
         this.query = "SELECT rdf:type(?album) ?album tracker:id(?album) AS id ?title ?author SUM(?length) AS duration tracker:coalesce (fn:year-from-dateTime(?date), 'Unknown') WHERE {?album a nmm:MusicAlbum ; nie:title ?title; nmm:albumArtist [ nmm:artistName ?author ] . ?song nmm:musicAlbum ?album ; nfo:duration ?length OPTIONAL { ?song nie:informationElementDate ?date } }  GROUP BY ?album ORDER BY ?author ?title"
 
         tracker.query_async(this.query, null, Lang.bind(this, this._queueCollector, null));
+        
+        this.model = new ViewModel();
+        if(this.model.is_empty()) {
+            let view = new EmptyView("emblem-music-symbolic", "No Albums Found!");
+            this.pack_start(view, true, true, 0);
+        }
+        else {
+            let label = new Gtk.Label({label : "Albums Should apear here instead of this label"});
+            this.add(label);
+        }
+        
     },
 
 });
+
+const Artists = new Lang.Class({
+    Name: "ArtistsView",
+    Extends: ViewContainer,
+    
+    _init: function(header_bar){
+        this.parent("Artists", header_bar);
+    },
+    
+});
+
 
 const Songs = new Lang.Class({
     Name: "SongsView",
