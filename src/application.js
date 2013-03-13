@@ -81,41 +81,48 @@ const Application = new Lang.Class({
         },
 
         _build_app: function(){
-            this._window = new Gtk.ApplicationWindow({application: this,
-                                                      title: _("Music"),
-                                                      });
+                this._window = new Gtk.ApplicationWindow({application: this,
+                                                          title: _("Music"),
+                                                          });
 
-            this.vbox = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL, spacing: 0});
+                this.vbox = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL, spacing: 0});
 
-            this.playlist = new Playlist.Playlist();
-            this.player = new Player.Player(this.playlist);
+                this.playlist = new Playlist.Playlist();
+                this.player = new Player.Player(this.playlist);
 
-            this.views = new Array();
-            
-            this.toolbar = new Toolbar.Toolbar();
-            this._stack = new Gd.Stack({visible: true});
-            
-            this._window.set_default_size(640, 400);
-            this.vbox.pack_start(this.toolbar, false, false, 0);
-            this.vbox.pack_start(this._stack, true, true, 0);
-            this.vbox.pack_start(this.player.eventbox, false, false, 0);
-            this._window.add(this.vbox);
+                this.views = new Array();
+                
+                this.toolbar = new Toolbar.Toolbar();
+                this._stack = new Gd.Stack({visible: true});
+                
+                this._window.set_default_size(640, 400);
+                this.vbox.pack_start(this.toolbar, false, false, 0);
+                this.vbox.pack_start(this._stack, true, true, 0);
+                this.vbox.pack_start(this.player.eventbox, false, false, 0);
+                this._window.add(this.vbox);
 
-            this.views[0] = new Views.Albums("Albums");
-            this.views[1] = new Views.Artists("Artists");
-            this.views[2] = new Views.Songs("Songs");
-            this.views[3] = new Views.Playlists("Playlists");
+                this.views[0] = new Views.Albums(this.toolbar);
+                this.views[1] = new Views.Artists(this.toolbar);
+                this.views[2] = new Views.Songs(this.toolbar);
+                this.views[3] = new Views.Playlists(this.toolbar);
 
+                for (var i in this.views) {
+                    this._stack.add_titled (this.views[i],
+                                            this.views[i].title,
+                                            this.views[i].title);
+                }
 
-            for (var i in this.views) {
-                this._stack.add_titled (this.views[i],
-                                        this.views[i].title,
-                                        this.views[i].title);
-            }
-            this.toolbar.set_stack (this._stack);
-            this.toolbar.show_all();
-            this.player.eventbox.show_all();
-            this.vbox.show_all();
+                this.toolbar.connect ("notify::mode", this._on_notify_mode);
+
+                this.toolbar.set_stack (this._stack);
+                this.toolbar.show_all();
+                this.player.eventbox.show_all();
+                this.vbox.show_all();
+
+        },
+
+        _on_notify_mode: function(toolbar, mode) {
+            print (mode)
         },
 
         _on_settings_key_changed: function(){

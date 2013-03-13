@@ -26,33 +26,10 @@ const GObject = imports.gi.GObject;
 const Gd = imports.gi.Gd;
 const Gio = imports.gi.Gio;
 const Widgets = imports.widgets;
+const Tracker = imports.gi.Tracker;
 
+const tracker = Tracker.SparqlConnection.get (null);
 
-const ViewContainer = new Lang.Class({
-    Name: "ViewContainer",
-    Extend: Gtk.Grid,
-    
-    _init: function(){
-        this.parent();
-        //this.set_orientation(Gtk.Orientation.VERTICAL );
-        this.view = new Gd.MainView({ shadow_type : Gtk.ShadowType.NONE});
-        this._model = new ViewModel();
-        
-        this.widget.add(this.view);
-        this.widget.show_all();
-    }
-});
-
-
-const Default = new Lang.Class({
-    Name: "DefaultView",
-    Extends: Gtk.Box,
-    
-    _init: function(title){
-        this.parent();
-
-    },
-});
 
 const ViewModel = new Lang.Class ({
     Name: "ViewModel",
@@ -71,57 +48,80 @@ const ViewModel = new Lang.Class ({
     
 });
 
-const Albums = new Lang.Class({
-    Name: "AlbumsView",
-    Extends: ViewContainer,
-    
-    _init: function(title){
-        this.parent();
-        
-        let box = new Gtk.HBox();
-        this.title = title;
-        let img = Gtk.Image.new_from_icon_name("audio-x-generic-symbolic", Gtk.IconSize.BUTTON);
-        let label = new Gtk.Label({label : "No albums were found !"});
 
-        box.pack_start(new Gtk.Label({label : ""}), true, true, 6);
-        box.pack_start(img, false, false, 6);
-        box.pack_start(label, false, false, 6);
-        box.pack_start(new Gtk.Label({label : ""}), true, true, 6);
-        this.view.attach(box, 0 ,1, 0, 1);
-        this.wdiget.show_all();
-    },
+const ViewContainer = new Lang.Class({
+    Name: "ViewContainer",
+    Extends: Gtk.Grid,
     
+    _init: function(title, header_bar){
+        this.parent();
+
+        this.header_bar = header_bar;
+        this.title = title;
+        this.show_all();
+    },
+
+    _queueCollector: function(connection, res, params) {
+        print (res);
+        try {
+            let cursor = tracker.query_finish(res);
+            while(cursor.next(null)){
+                
+                var rdf_type = cursor.get_string(0);
+                var album = cursor.get_string(1);
+                var tacker_id = cursor.get_string(2);
+                var title = cursor.get_string(3);
+                var artists = cursor.get_string(4);
+                var duration = cursor.get_string(6);
+                var data = cursor.get_string(6);
+            }
+        } catch (e) {
+            print('Unable to query collection items ' + e.message);
+            return;
+        }
+    },
 });
 
 const Artists = new Lang.Class({
     Name: "ArtistsView",
-    Extends: Gtk.Box,
+    Extends: ViewContainer,
     
-    _init: function(title){
-        this.parent();
-        this.title = title;
+    _init: function(header_bar){
+        this.parent("Artists", header_bar);
     },
     
+});
+
+
+const Albums = new Lang.Class({
+    Name: "AlbumsView",
+    Extends: ViewContainer,
+    
+    _init: function(header_bar){
+        this.parent("Albums", header_bar);
+        
+        this.query = "SELECT rdf:type(?album) ?album tracker:id(?album) AS id ?title ?author SUM(?length) AS duration tracker:coalesce (fn:year-from-dateTime(?date), 'Unknown') WHERE {?album a nmm:MusicAlbum ; nie:title ?title; nmm:albumArtist [ nmm:artistName ?author ] . ?song nmm:musicAlbum ?album ; nfo:duration ?length OPTIONAL { ?song nie:informationElementDate ?date } }  GROUP BY ?album ORDER BY ?author ?title"
+
+        tracker.query_async(this.query, null, Lang.bind(this, this._queueCollector, null));
+    },
+
 });
 
 const Songs = new Lang.Class({
     Name: "SongsView",
     Extends: ViewContainer,
-    
-    _init: function(title){
-        this.parent();
-        this.title = title;
+    _init: function(header_bar){
+        this.parent("Songs", header_bar);
     },
     
 });
 
 const Playlists = new Lang.Class({
     Name: "PlaylistsView",
-    Extends: Gtk.Box,
+    Extends: ViewContainer,
     
-    _init: function(title){
-        this.parent();
-        this.title = title;
+    _init: function(header_bar){
+        this.parent("Playlists", header_bar);
     },
     
 });
