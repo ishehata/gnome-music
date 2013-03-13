@@ -112,7 +112,7 @@ const Application = new Lang.Class({
                                             this.views[i].title);
                 }
 
-                this.toolbar.connect ("notify::mode", this._on_notify_mode);
+                this._stack.connect ("notify::visible-child", this._on_notify_mode);
 
                 this.toolbar.set_stack (this._stack);
                 this.toolbar.show_all();
@@ -121,8 +121,9 @@ const Application = new Lang.Class({
 
         },
 
-        _on_notify_mode: function(toolbar, mode) {
-            print (mode)
+        _on_notify_mode: function(stack, param) {
+            print (stack.get_visible_child());
+            print ("======");
         },
 
         _on_settings_key_changed: function(){
