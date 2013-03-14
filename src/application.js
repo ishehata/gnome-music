@@ -76,7 +76,7 @@ const Application = new Lang.Class({
                                                      provider,
                                                      600);
 
-            let settings = Gtk.Settings.get_default();
+            //let settings = Gtk.Settings.get_default();
             //settings.gtk_application_prefer_dark_theme = true;
         },
 

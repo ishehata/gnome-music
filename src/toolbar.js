@@ -39,6 +39,7 @@ const Toolbar = new Lang.Class({
         this.parent();
         this._stack_switcher = new Gd.StackSwitcher ();
         this.set_custom_title (this._stack_switcher);
+        //this.get_style_context().add_class("music-topbar");
     },
     
     set_stack: function (stack) {
