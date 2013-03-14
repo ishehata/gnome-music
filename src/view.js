@@ -25,8 +25,9 @@ const GdkPixbuf = imports.gi.GdkPixbuf;
 const GObject = imports.gi.GObject;
 const Gd = imports.gi.Gd;
 const Gio = imports.gi.Gio;
-const Widgets = imports.widgets;
+//const Widgets = imports.widgets;
 const Tracker = imports.gi.Tracker;
+const Application = imports.application
 
 const tracker = Tracker.SparqlConnection.get (null);
 
@@ -54,29 +55,6 @@ const EmptyView = new Lang.Class ({
     },
 });
 
-
-const ViewModel = new Lang.Class ({
-    Name: "ViewModel",
-    
-    _init: function(list_store) {
-        this._model = list_store;
-        //this.model.set_sort_column_id(Gd.MainColumns.MTIME,
-                        //              Gtk.SortType.DESCENDING);
-        this._iter = this._model.append();
-    },
-    
-    clear: function() {
-        this._model.clear()
-    },
-    
-    add_item: function(item) {
-        //this._model.set(this._iter, [-1], item);
-    },
-    
-    
-});
-
-
 const ViewContainer = new Lang.Class({
     Name: "ViewContainer",
     Extends: Gtk.Grid,
@@ -89,31 +67,11 @@ const ViewContainer = new Lang.Class({
         this.view = new Gd.MainView({ shadow_type: Gtk.ShadowType.NONE });
 
         this.add(this.view);
-        //this.view.set_view_type(Gd.MainViewType.LIST);
+        this.view.set_view_type(Gd.MainViewType.LIST);
         //print(this.view.get_view_type());
         this.show_all();
     },
 
-    _queueCollector: function(connection, res, params) {
-        print (res);
-        try {
-            let cursor = tracker.query_finish(res);
-            while(cursor.next(null)){
-                
-                var rdf_type = cursor.get_string(0);
-                var album = cursor.get_string(1);
-                var tacker_id = cursor.get_string(2);
-                var title = cursor.get_string(3);
-                var artists = cursor.get_string(4);
-                var duration = cursor.get_string(6);
-                var data = cursor.get_string(6);
-            }
-        } catch (e) {
-            print('Unable to query collection items ' + e.message);
-            return;
-        }
-    },
-    
     _add_list_renderers: function() {
         let listWidget = this.view.get_generic_view();
 
@@ -197,27 +155,24 @@ const Albums = new Lang.Class({
     
     _init: function(header_bar){
         this.parent("Albums", header_bar);
-
-        this.query = "SELECT rdf:type(?album) ?album tracker:id(?album) AS id ?title ?author SUM(?length) AS duration tracker:coalesce (fn:year-from-dateTime(?date), 'Unknown') WHERE {?album a nmm:MusicAlbum ; nie:title ?title; nmm:albumArtist [ nmm:artistName ?author ] . ?song nmm:musicAlbum ?album ; nfo:duration ?length OPTIONAL { ?song nie:informationElementDate ?date } }  GROUP BY ?album ORDER BY ?author ?title"
-
-        tracker.query_async(this.query, null, Lang.bind(this, this._queueCollector, null));
         
-        let list_store = Gtk.ListStore.new(
-            [ GObject.TYPE_LONG,   // Album id
+        this._list_store = Gtk.ListStore.new(
+            [ GObject.TYPE_LONG,   // Album id 
               GObject.TYPE_STRING, // Album title
               GObject.TYPE_STRING, // Album author
               GObject.TYPE_LONG,   // Album date
               GObject.TYPE_STRING, // Album url
               GdkPixbuf.Pixbuf]);    // Album image
 
-        //this.model = new ViewModel(list_store);
-        //this.view.set_model(list_store);
-        
+        this.query = "SELECT rdf:type(?album) ?album tracker:id(?album) AS id ?title ?author SUM(?length) AS duration tracker:coalesce (fn:year-from-dateTime(?date), 'Unknown') WHERE {?album a nmm:MusicAlbum ; nie:title ?title; nmm:albumArtist [ nmm:artistName ?author ] . ?song nmm:musicAlbum ?album ; nfo:duration ?length OPTIONAL { ?song nie:informationElementDate ?date } }  GROUP BY ?album ORDER BY ?author ?title"
+
+        tracker.query_async(this.query, null, Lang.bind(this, this._queueCollector, null));
+
         //Check if there are albums to be viewed
+        //this.view.set_model(this._list_store);
         if(true) {
             // Empty view if there is no albums to be viewed
             let empty_view = new EmptyView("emblem-music-symbolic", "No Albums Found!");
-            this.remove(this.view);
             this.add(empty_view);
         }
         else {
@@ -231,6 +186,30 @@ const Albums = new Lang.Class({
             this.pack_start(label, true, true, 0);
         }
         
+    },
+    
+    populate: function() {
+        
+    },
+    
+    _queueCollector: function(connection, res, params) {
+        print (res);
+        try {
+            let cursor = tracker.query_finish(res);
+            while(cursor.next(null)){
+                
+                var rdf_type = cursor.get_string(0);
+                var album = cursor.get_string(1);
+                var tacker_id = cursor.get_string(2);
+                var title = cursor.get_string(3);
+                var artists = cursor.get_string(4);
+                var duration = cursor.get_string(6);
+                var data = cursor.get_string(6);
+            }
+        } catch (e) {
+            print('Unable to query collection items ' + e.message);
+            return;
+        }
     },
 
 });
@@ -248,7 +227,6 @@ const Artists = new Lang.Class({
               GObject.TYPE_STRING, // Album url
               GdkPixbuf.Pixbuf,    // Album image
         ]);
-        this.model = new ViewModel(list_store);
         //this.view.set_model(list_store);
     },
     
@@ -267,7 +245,6 @@ const Songs = new Lang.Class({
               GObject.TYPE_STRING, // Album url
               GdkPixbuf.Pixbuf,    // Album image
         ]);
-        this.model = new ViewModel(list_store);
         //this.view.set_model(list_store);
     },
     
@@ -286,7 +263,6 @@ const Playlists = new Lang.Class({
               GObject.TYPE_STRING, // Album url
               GdkPixbuf.Pixbuf,    // Album image
         ]);
-        this.model = new ViewModel(list_store);
         //this.view.set_model(list_store);
     },
     
