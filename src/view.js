@@ -69,12 +69,19 @@ const ViewModel = new Lang.Class ({
         ]);
         //this.model.set_sort_column_id(Gd.MainColumns.MTIME,
                         //              Gtk.SortType.DESCENDING);
+        let iter = this._model.append();
+        //this._model.set(iter, [0], ["Song 0"]);
     },
     
     is_empty: function() {
-        if(this._model.get_iter_first()[0]);
+        if(this._model.get_iter_first()[0])
             return false;
-        return true;
+        else 
+            return true;
+    },
+    
+    clear: function() {
+        this._model.clear()
     },
     
 });
@@ -131,7 +138,7 @@ const Albums = new Lang.Class({
         }
         else {
             let label = new Gtk.Label({label : "Albums Should apear here instead of this label"});
-            this.add(label);
+            this.pack_start(label, true, true, 0);
         }
         
     },
