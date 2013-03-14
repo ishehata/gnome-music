@@ -60,12 +60,10 @@ const ViewModel = new Lang.Class ({
     
     _init: function() {
         this._model = Gtk.ListStore.new(
-            [ GObject.TYPE_STRING,
-//              GObject.TYPE_STRING,
-  //            GObject.TYPE_STRING,
-    //          GObject.TYPE_STRING,
-      //        GdkPixbuf.Pixbuf,
-        //      GObject.TYPE_LONG]
+            [ GObject.TYPE_LONG,   // Album id
+              GObject.TYPE_STRING, // Album name
+              GObject.TYPE_STRING, // Album url
+              GdkPixbuf.Pixbuf,    // Album image
         ]);
         //this.model.set_sort_column_id(Gd.MainColumns.MTIME,
                         //              Gtk.SortType.DESCENDING);
@@ -132,11 +130,14 @@ const Albums = new Lang.Class({
         tracker.query_async(this.query, null, Lang.bind(this, this._queueCollector, null));
         
         this.model = new ViewModel();
+        //Check if there are albums to be viewed
         if(this.model.is_empty()) {
+            // Empty view if there is no albums to be viewed
             let view = new EmptyView("emblem-music-symbolic", "No Albums Found!");
             this.pack_start(view, true, true, 0);
         }
         else {
+            // View albums
             let label = new Gtk.Label({label : "Albums Should apear here instead of this label"});
             this.pack_start(label, true, true, 0);
         }
