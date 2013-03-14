@@ -166,10 +166,11 @@ const Albums = new Lang.Class({
 
         this.query = "SELECT rdf:type(?album) ?album tracker:id(?album) AS id ?title ?author SUM(?length) AS duration tracker:coalesce (fn:year-from-dateTime(?date), 'Unknown') WHERE {?album a nmm:MusicAlbum ; nie:title ?title; nmm:albumArtist [ nmm:artistName ?author ] . ?song nmm:musicAlbum ?album ; nfo:duration ?length OPTIONAL { ?song nie:informationElementDate ?date } }  GROUP BY ?album ORDER BY ?author ?title"
 
+        this.view.set_model(this._list_store);
         tracker.query_async(this.query, null, Lang.bind(this, this._queueCollector, null));
+        this.populate();
 
-        //Check if there are albums to be viewed
-        //this.view.set_model(this._list_store);
+        /* Check if there are albums to be viewed
         if(true) {
             // Empty view if there is no albums to be viewed
             let empty_view = new EmptyView("emblem-music-symbolic", "No Albums Found!");
@@ -181,15 +182,15 @@ const Albums = new Lang.Class({
                for(let item in items) {
                    this.model.add_item(item);
                }
-            */
+           
             let label = new Gtk.Label({label : "Albums Should apear here instead of this label"});
             this.pack_start(label, true, true, 0);
         }
-        
+        */
     },
     
     populate: function() {
-        
+        //print(title);
     },
     
     _queueCollector: function(connection, res, params) {
@@ -222,12 +223,12 @@ const Artists = new Lang.Class({
         this.parent("Artists", header_bar);
         
         let list_store = Gtk.ListStore.new(
-            [ GObject.TYPE_LONG,   // Album id
-              GObject.TYPE_STRING, // Album name
-              GObject.TYPE_STRING, // Album url
-              GdkPixbuf.Pixbuf,    // Album image
+            [ GObject.TYPE_LONG,   // Artist id
+              GObject.TYPE_STRING, // Artist name
+              GObject.TYPE_STRING, // Artist url
+              GdkPixbuf.Pixbuf,    // Artist image
         ]);
-        //this.view.set_model(list_store);
+        this.view.set_model(list_store);
     },
     
 });
@@ -245,7 +246,7 @@ const Songs = new Lang.Class({
               GObject.TYPE_STRING, // Album url
               GdkPixbuf.Pixbuf,    // Album image
         ]);
-        //this.view.set_model(list_store);
+        this.view.set_model(list_store);
     },
     
 });
@@ -263,7 +264,7 @@ const Playlists = new Lang.Class({
               GObject.TYPE_STRING, // Album url
               GdkPixbuf.Pixbuf,    // Album image
         ]);
-        //this.view.set_model(list_store);
+        this.view.set_model(list_store);
     },
     
 });
