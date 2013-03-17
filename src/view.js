@@ -112,6 +112,7 @@ const Albums = new Lang.Class({
 
     _queueCollector: function(connection, res, params) {
         //print (res);
+        print("queueCollector");
         try {
             let cursor = tracker.query_finish(res);
             while(cursor.next(null)){
@@ -123,6 +124,7 @@ const Albums = new Lang.Class({
                 var artists = cursor.get_string(4);
                 var duration = cursor.get_string(6);
                 var data = cursor.get_string(6);
+                var icon = GdkPixbuf.new_from_filename('/usr/share/icons/gnome/scalable/actions/view-paged-symbolic.svg');
 
                 this.model.push_item(tracker_id, title, artists, icon, duration, data);
             }
