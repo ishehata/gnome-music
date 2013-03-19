@@ -83,12 +83,19 @@ const Albums = new Lang.Class({
         this.parent("Albums", header_bar);
         
         //Set Model to MainView
-        //this.model = new Models.AlbumModel();
+        this.model = Gtk.ListStore.new(
+            [ GObject.TYPE_STRING,
+              GObject.TYPE_STRING,
+              GObject.TYPE_STRING,
+              GObject.TYPE_STRING,
+              GdkPixbuf.Pixbuf,
+              GObject.TYPE_LONG,
+              GObject.TYPE_BOOLEAN ]);
         //this.view.set_model(this.model);
 
         this.query = "SELECT rdf:type(?album) ?album tracker:id(?album) AS id ?title ?author SUM(?length) AS duration tracker:coalesce (fn:year-from-dateTime(?date), 'Unknown') WHERE {?album a nmm:MusicAlbum ; nie:title ?title; nmm:albumArtist [ nmm:artistName ?author ] . ?song nmm:musicAlbum ?album ; nfo:duration ?length OPTIONAL { ?song nie:informationElementDate ?date } }  GROUP BY ?album ORDER BY ?author ?title"
 
-        tracker.query_async(this.query, null, Lang.bind(this, this._queueCollector, null));
+        //tracker.query_async(this.query, null, Lang.bind(this, this._queueCollector, null));
 
         /* Check if there are albums to be viewed
         if(true) {
