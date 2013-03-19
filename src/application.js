@@ -121,8 +121,7 @@ const Application = new Lang.Class({
         },
 
         _on_notify_mode: function(stack, param) {
-            //print (stack.get_visible_child());
-            //print ("======");
+            stack.get_visible_child().populate();
         },
 
         _on_settings_key_changed: function(){
