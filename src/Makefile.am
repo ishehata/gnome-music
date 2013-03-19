@@ -6,19 +6,15 @@ jsdir = $(pkgdatadir)
 dist_js_DATA = \
 	album_art_cache.js \
 	browse_history.js \
-	collection_view.js \
-	list_store.js \
 	player.js \
 	playlist_songs.js \
 	toolbar.js \
-	widgets.js \
 	application.js \
 	clickable_label.js \
 	gnome-music.in \
 	main.js \
 	package.js \
 	playlist.js \
-	playlist-view.js \
 	searchbar.js \
 	view.js \
 	$(NULL)

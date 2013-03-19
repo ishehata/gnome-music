@@ -27,7 +27,6 @@ const GLib = imports.gi.GLib;
 const Gd = imports.gi.Gd;
 
 const Toolbar = imports.toolbar;
-const Widgets = imports.widgets;
 const Views = imports.view;
 const Player = imports.player;
 const BrowseHistory = imports.browse_history;

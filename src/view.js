@@ -30,7 +30,6 @@ const Tracker = imports.gi.Tracker;
 const tracker = Tracker.SparqlConnection.get (null);
 
 const Application = imports.application
-const Models = imports.models;
 
 const EmptyView = new Lang.Class ({
     Name: "EmptyView",
@@ -84,8 +83,8 @@ const Albums = new Lang.Class({
         this.parent("Albums", header_bar);
         
         //Set Model to MainView
-        this.model = new Models.AlbumModel();
-        this.view.set_model(this.model);
+        //this.model = new Models.AlbumModel();
+        //this.view.set_model(this.model);
 
         this.query = "SELECT rdf:type(?album) ?album tracker:id(?album) AS id ?title ?author SUM(?length) AS duration tracker:coalesce (fn:year-from-dateTime(?date), 'Unknown') WHERE {?album a nmm:MusicAlbum ; nie:title ?title; nmm:albumArtist [ nmm:artistName ?author ] . ?song nmm:musicAlbum ?album ; nfo:duration ?length OPTIONAL { ?song nie:informationElementDate ?date } }  GROUP BY ?album ORDER BY ?author ?title"
 
@@ -126,7 +125,7 @@ const Albums = new Lang.Class({
                 var data = cursor.get_string(6);
                 var icon = GdkPixbuf.new_from_filename('/usr/share/icons/gnome/scalable/actions/view-paged-symbolic.svg');
 
-                this.model.push_item(tracker_id, title, artists, icon, duration, data);
+                //this.model.push_item(tracker_id, title, artists, icon, duration, data);
             }
         } catch (e) {
             print('Unable to query collection items ' + e.message);
