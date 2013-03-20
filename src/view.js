@@ -141,14 +141,6 @@ const Albums = new Lang.Class({
                     var data = cursor.get_string(6);
                     //var icon = GdkPixbuf.new_from_filename('/usr/share/icons/gnome/scalable/actions/view-paged-symbolic.svg');
                     offset += 1;
-                    
-                    print (rdf_type)
-                    print (album)
-                    print (tracker_id)
-                    print (title)
-                    print (artists)
-                    print (duration)
-                    print ("============================")
                 }
                 //this.model.push_item(tracker_id, title, artists, icon, duration, data);
             }
@@ -187,7 +179,7 @@ const Songs = new Lang.Class({
     _init: function(header_bar){
         this.parent("Songs", header_bar);
 
-        this.query = "SELECT rdf:type (?song) ?song tracker:id(?song) AS id nie:title(?song) AS title ?duration ?url tracker:coalesce (nie:title(?album), '') AS site tracker:coalesce (nmm:artistName(?artist), '') AS author WHERE { ?song a nmm:MusicPiece ; nfo:duration ?duration; nie:isStoredAs ?as . ?as nie:url ?url . OPTIONAL { ?song nmm:musicAlbum ?album } . OPTIONAL { ?album nmm:albumArtist ?artist }} GROUP BY ?song ORDER BY ?author ?album"
+        this.query = "SELECT ?song nie:url(?song) nie:title(?song) nmm:artistName(nmm:performer(?song)) tracker:id(nmm:musicAlbum(?song)) nie:title(nmm:musicAlbum(?song)) nfo:duration(?song) { ?song a nmm:MusicPiece } ORDER BY tracker:added(?song)"
         this._items = {}
         this.model = Gtk.ListStore.new(
             [ GObject.TYPE_STRING,
@@ -200,28 +192,40 @@ const Songs = new Lang.Class({
         this.view.set_view_type(Gd.MainViewType.LIST);
         this.view.set_model(this.model);
 
-        /*
+
         let listWidget = this.view.get_generic_view();
-        let typeRenderer =
+
+
+        let albumRenderer =
             new Gd.StyledTextRenderer({ xpad: 16 });
-        typeRenderer.add_class('dim-label');
-        listWidget.add_renderer(typeRenderer, Lang.bind(this,
+        albumRenderer.add_class('dim-label');
+
+        listWidget.add_renderer(albumRenderer, Lang.bind(this,
             function(col, cell, model, iter) {
                 let id = model.get_value(iter, 0);
                 let doc = this._getItem(id);
-                typeRenderer.text = doc[2];
+                albumRenderer.text =  doc["album"];
             }));
-        
+
+
         let whereRenderer =
             new Gd.StyledTextRenderer({ xpad: 16 });
         whereRenderer.add_class('dim-label');
+
         listWidget.add_renderer(whereRenderer, Lang.bind(this,
             function(col, cell, model, iter) {
                 let id = model.get_value(iter, 0);
                 let doc = this._getItem(id);
-                whereRenderer.text = doc[1];
+                var duration = doc["duration"]
+                var minutes = parseInt(duration/60);
+                var seconds = duration%60
+                var time = ""
+                if (seconds < 10)
+                    time = minutes + ":0" + seconds
+                else
+                    time = minutes + ":" + seconds
+                whereRenderer.text = time;
             }));
-        */
     },
 
     _getItem: function(id) {
@@ -234,43 +238,44 @@ const Songs = new Lang.Class({
     },
 
     _queueCollector: function(connection, res, params) {
-        //print (res);
         print("queueCollector");
-        try {
             let offset = 1;
             let cursor = tracker.query_finish(res);
             while(cursor.next(null)){
-                if (offset % 50 != 0){
-                    var rdf_type = cursor.get_string(0)[0];
-                    var song = cursor.get_string(1)[0];
-                    var tracker_id = cursor.get_string(2)[0];
-                    var title = cursor.get_string(3)[0];
-                    var duration = cursor.get_string(4)[0];
-                    var path = cursor.get_string(5)[0];
-                    var artist = cursor.get_string(6)[0];
-                    var data = cursor.get_string(7)[0];
-                    var data2 = cursor.get_string(8)[0];
-                    //var icon = GdkPixbuf.new_from_filename('/usr/share/icons/gnome/scalable/actions/view-paged-symbolic.svg');
+                if (offset % 100 != 0){
+                    let id =cursor.get_string(0)[0]
+                    let song = {
+                        "id": id,
+                        "url": cursor.get_string(1)[0],
+                        "title": cursor.get_string(2)[0],
+                        "artist": cursor.get_string(3)[0],
+                        "album_id": cursor.get_string(4)[0],
+                        "album": cursor.get_string(5)[0],
+                        "duration": parseInt(cursor.get_string(6)[0]),
+                        "icon": GdkPixbuf.Pixbuf.new_from_file('/usr/share/icons/gnome/scalable/places/folder-music-symbolic.svg'),
+                    }
                     offset += 1;
-                    print ("============================")
                     //this.model.append([tracker_id, title, artist, album, null])
-                    this._items[song] = [song, path, title, "unkown", null, parseInt(duration), duration];
-                    print(this._items[song])
-                    if (title != null) {
+                    this._items[id] = song
+
+                    if (song["title"] != null) {
                         let iter = this.model.append();
                         this.model.set(iter,
                             [0, 1, 2, 3, 4, 5, 6],
-                            this._items[song]);
+                            [song["id"],
+                            song["album"],
+                            song["title"],
+                            song["artist"],
+                            song["icon"],
+                            song["duration"],
+                            false]);
                     }
                     else
-                        print (path)
+                        print (song["url"])
+                    
                 //this.model.push_item(tracker_id, title, artists, icon, duration, data);
                 }
             }
-        } catch (e) {
-            print('Unable to query collection items ' + e.message);
-            return;
-        }
 
         
 
