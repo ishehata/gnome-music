@@ -190,25 +190,38 @@ const Songs = new Lang.Class({
         this.query = "SELECT rdf:type (?song) ?song tracker:id(?song) AS id nie:title(?song) AS title ?duration ?url tracker:coalesce (nie:title(?album), '') AS site tracker:coalesce (nmm:artistName(?artist), '') AS author WHERE { ?song a nmm:MusicPiece ; nfo:duration ?duration; nie:isStoredAs ?as . ?as nie:url ?url . OPTIONAL { ?song nmm:musicAlbum ?album } . OPTIONAL { ?album nmm:albumArtist ?artist }} GROUP BY ?song ORDER BY ?author ?album"
         this._items = {}
         this.model = Gtk.ListStore.new(
-            [ GObject.TYPE_LONG,   // Song id
-              GObject.TYPE_STRING, // Song title
-              GObject.TYPE_STRING, // Song artist
-              GObject.TYPE_STRING, // Song album
-              GdkPixbuf.Pixbuf,    // Song image
-        ]);
+            [ GObject.TYPE_STRING,
+              GObject.TYPE_STRING,
+              GObject.TYPE_STRING,
+              GObject.TYPE_STRING,
+              GdkPixbuf.Pixbuf,
+              GObject.TYPE_LONG,
+              GObject.TYPE_BOOLEAN ]);
         this.view.set_view_type(Gd.MainViewType.LIST);
         this.view.set_model(this.model);
+
+        /*
         let listWidget = this.view.get_generic_view();
         let typeRenderer =
             new Gd.StyledTextRenderer({ xpad: 16 });
         typeRenderer.add_class('dim-label');
         listWidget.add_renderer(typeRenderer, Lang.bind(this,
             function(col, cell, model, iter) {
-                let id = model.get_value(iter, Gd.MainColumns.ID);
+                let id = model.get_value(iter, 0);
                 let doc = this._getItem(id);
-                if (doc)
-                    typeRenderer.text = doc[1];
+                typeRenderer.text = doc[2];
             }));
+        
+        let whereRenderer =
+            new Gd.StyledTextRenderer({ xpad: 16 });
+        whereRenderer.add_class('dim-label');
+        listWidget.add_renderer(whereRenderer, Lang.bind(this,
+            function(col, cell, model, iter) {
+                let id = model.get_value(iter, 0);
+                let doc = this._getItem(id);
+                whereRenderer.text = doc[1];
+            }));
+        */
     },
 
     _getItem: function(id) {
@@ -233,28 +246,24 @@ const Songs = new Lang.Class({
                     var tracker_id = cursor.get_string(2)[0];
                     var title = cursor.get_string(3)[0];
                     var duration = cursor.get_string(4)[0];
-                    var album = cursor.get_string(5)[0];
+                    var path = cursor.get_string(5)[0];
                     var artist = cursor.get_string(6)[0];
                     var data = cursor.get_string(7)[0];
                     var data2 = cursor.get_string(8)[0];
                     //var icon = GdkPixbuf.new_from_filename('/usr/share/icons/gnome/scalable/actions/view-paged-symbolic.svg');
                     offset += 1;
-                    print (rdf_type)
-                    print (song)
-                    print (tracker_id)
-                    print (title)
-                    print (duration)
-                    print (album)
-                    print (artist)
-                    print (data)
-                    print (data2)
                     print ("============================")
                     //this.model.append([tracker_id, title, artist, album, null])
-                    this._items[song] = [song, title, artist, album];
-                    let iter = this.model.append();
-                    this.model.set(iter,
-                        [ 0, 1, 2, 3],
-                        this._items[song]);
+                    this._items[song] = [song, path, title, "unkown", null, parseInt(duration), duration];
+                    print(this._items[song])
+                    if (title != null) {
+                        let iter = this.model.append();
+                        this.model.set(iter,
+                            [0, 1, 2, 3, 4, 5, 6],
+                            this._items[song]);
+                    }
+                    else
+                        print (path)
                 //this.model.push_item(tracker_id, title, artists, icon, duration, data);
                 }
             }
