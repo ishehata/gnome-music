@@ -63,10 +63,9 @@ const ViewContainer = new Lang.Class({
         this.header_bar = header_bar;
         this.title = title;
         this.view = new Gd.MainView({ shadow_type: Gtk.ShadowType.NONE });
-
-        this.add(this.view);
+        this.view.selection_mode = false;
         this.view.set_view_type(Gd.MainViewType.ICON);
-        this.view.set_selection_mode(Gtk.SelectionMode.BROWSE);
+        this.add(this.view);
         this.show_all();
     },
 
@@ -96,7 +95,11 @@ const Albums = new Lang.Class({
               GObject.TYPE_BOOLEAN ]);
         //this.view.set_model(this.model);
 
-        this.query = "SELECT rdf:type(?album) ?album tracker:id(?album) AS id ?title ?author SUM(?length) AS duration tracker:coalesce (fn:year-from-dateTime(?date), 'Unknown') WHERE {?album a nmm:MusicAlbum ; nie:title ?title; nmm:albumArtist [ nmm:artistName ?author ] . ?song nmm:musicAlbum ?album ; nfo:duration ?length OPTIONAL { ?song nie:informationElementDate ?date } }  GROUP BY ?album ORDER BY ?author ?title"
+
+        this.view.set_view_type(Gd.MainViewType.ICON);
+        this.view.set_model(this.model);
+
+        this.query = 'SELECT tracker:id(?album) nie:title(?album) tracker:coalesce( (SELECT GROUP_CONCAT(nmm:artistName(?artist), ",") WHERE { ?album nmm:albumArtist ?artist }), (SELECT GROUP_CONCAT((SELECT nmm:artistName(nmm:performer(?_12)) as perf WHERE { ?_12 nmm:musicAlbum ?album } GROUP BY ?perf), ",") as album_performer WHERE { }) ) as album_artist tracker:coalesce(nmm:albumTrackCount(?album), (SELECT COUNT(?_1) WHERE { ?_1 nmm:musicAlbum ?album; tracker:available "true" })) (SELECT GROUP_CONCAT(fn:year-from-dateTime(?c), ",") WHERE { ?_2 nmm:musicAlbum ?album; nie:contentCreated ?c; tracker:available "true" }) as albumyear { ?album a nmm:MusicAlbum FILTER (EXISTS { ?_3 nmm:musicAlbum ?album; tracker:available "true" }) } ORDER BY ?album_artist ?albumyear nie:title(?album)'
 
         //tracker.query_async(this.query, null, Lang.bind(this, this._queueCollector, null));
 
@@ -121,6 +124,7 @@ const Albums = new Lang.Class({
 
     populate: function() {
         print ("===========================")
+        this.model.clear();
         tracker.query_async(this.query, null, Lang.bind(this, this._queueCollector, null));
     },
 
@@ -132,17 +136,22 @@ const Albums = new Lang.Class({
             let cursor = tracker.query_finish(res);
             while(cursor.next(null)){
                 if (offset % 50 != 0){
-                    var rdf_type = cursor.get_string(0);
-                    var album = cursor.get_string(1);
-                    var tracker_id = cursor.get_string(2);
-                    var title = cursor.get_string(3);
-                    var artists = cursor.get_string(4);
-                    var duration = cursor.get_string(5);
-                    var data = cursor.get_string(6);
-                    //var icon = GdkPixbuf.new_from_filename('/usr/share/icons/gnome/scalable/actions/view-paged-symbolic.svg');
+                    var album = {
+                        "id": cursor.get_string(0)[0],
+                        "title": cursor.get_string(1)[0],
+                        "artist": cursor.get_string(2)[0],
+                        "num_tracks": cursor.get_integer(3),
+                        "year": cursor.get_integer(4),
+                        "icon": GdkPixbuf.Pixbuf.new_from_file('/usr/share/icons/gnome/scalable/places/folder-music-symbolic.svg')
+                    }
                     offset += 1;
+                    print (album)
+                    print ("=========")
+                    let iter = this.model.append();
+                    print ("==============>",album["title"], album["year"])
+                    this.model.set(iter, [ 0, 1, 2, 3, 4, 5 ],
+                        [ album["id"], "", album["title"], album["artist"], album["icon"], album["num_tracks"]]);
                 }
-                //this.model.push_item(tracker_id, title, artists, icon, duration, data);
             }
             
             
@@ -179,7 +188,7 @@ const Songs = new Lang.Class({
     _init: function(header_bar){
         this.parent("Songs", header_bar);
 
-        this.query = "SELECT ?song nie:url(?song) nie:title(?song) nmm:artistName(nmm:performer(?song)) tracker:id(nmm:musicAlbum(?song)) nie:title(nmm:musicAlbum(?song)) nfo:duration(?song) { ?song a nmm:MusicPiece } ORDER BY tracker:added(?song)"
+        this.query = "SELECT tracker:id(?song) nie:url(?song) nie:title(?song) nmm:artistName(nmm:performer(?song)) tracker:id(nmm:musicAlbum(?song)) nie:title(nmm:musicAlbum(?song)) nfo:duration(?song) { ?song a nmm:MusicPiece } ORDER BY tracker:added(?song)"
         this._items = {}
         this.model = Gtk.ListStore.new(
             [ GObject.TYPE_STRING,
@@ -194,7 +203,7 @@ const Songs = new Lang.Class({
 
 
         let listWidget = this.view.get_generic_view();
-
+        listWidget.selection_mode = false;
 
         let albumRenderer =
             new Gd.StyledTextRenderer({ xpad: 16 });
@@ -204,7 +213,7 @@ const Songs = new Lang.Class({
             function(col, cell, model, iter) {
                 let id = model.get_value(iter, 0);
                 let doc = this._getItem(id);
-                albumRenderer.text =  doc["album"];
+                albumRenderer.text = ""// doc["album"];
             }));
 
 
@@ -233,6 +242,7 @@ const Songs = new Lang.Class({
     },
 
     populate: function() {
+        this.model.clear();
         tracker.query_async(this.query,
                             null, Lang.bind(this, this._queueCollector, null));
     },
@@ -261,14 +271,13 @@ const Songs = new Lang.Class({
                     if (song["title"] != null) {
                         let iter = this.model.append();
                         this.model.set(iter,
-                            [0, 1, 2, 3, 4, 5, 6],
+                            [0, 1, 2, 3, 4, 5],
                             [song["id"],
                             song["album"],
                             song["title"],
                             song["artist"],
                             song["icon"],
-                            song["duration"],
-                            false]);
+                            song["duration"]]);
                     }
                     else
                         print (song["url"])
