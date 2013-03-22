@@ -118,11 +118,11 @@ const Application = new Lang.Class({
                 }
 
                 this._stack.connect ("notify::visible-child", this._on_notify_mode);
-
+                this.views[0].populate();
                 this.toolbar.set_stack (this._stack);
                 this.toolbar.show_all();
                 this.player.eventbox.show_all();
-                this.vbox.show_all();
+                this.vbox.show();
 
         },
 
