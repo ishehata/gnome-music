@@ -5,16 +5,12 @@ nodist_bin_SCRIPTS = gnome-music
 jsdir = $(pkgdatadir)
 dist_js_DATA = \
 	album_art_cache.js \
-	browse_history.js \
 	player.js \
-	playlist_songs.js \
 	toolbar.js \
 	application.js \
-	clickable_label.js \
 	gnome-music.in \
 	main.js \
 	package.js \
-	playlist.js \
 	searchbar.js \
 	view.js \
 	$(NULL)
