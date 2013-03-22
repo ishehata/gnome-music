@@ -26,10 +26,11 @@ const GObject = imports.gi.GObject;
 const Gd = imports.gi.Gd;
 const Gio = imports.gi.Gio;
 const Tracker = imports.gi.Tracker;
+const Application = imports.application;
 
 const tracker = Tracker.SparqlConnection.get (null);
-
-const Application = imports.application
+const AlbumArtCache = imports.album_art_cache;
+const albumArtCache = AlbumArtCache.AlbumArtCache.get_default ();
 
 const EmptyView = new Lang.Class ({
     Name: "EmptyView",
@@ -59,7 +60,7 @@ const ViewContainer = new Lang.Class({
     
     _init: function(title, header_bar){
         this.parent();
-
+        this.offset = 1;
         this.header_bar = header_bar;
         this.title = title;
         this.view = new Gd.MainView({ shadow_type: Gtk.ShadowType.NONE });
@@ -101,63 +102,34 @@ const Albums = new Lang.Class({
 
         this.query = 'SELECT tracker:id(?album) nie:title(?album) tracker:coalesce( (SELECT GROUP_CONCAT(nmm:artistName(?artist), ",") WHERE { ?album nmm:albumArtist ?artist }), (SELECT GROUP_CONCAT((SELECT nmm:artistName(nmm:performer(?_12)) as perf WHERE { ?_12 nmm:musicAlbum ?album } GROUP BY ?perf), ",") as album_performer WHERE { }) ) as album_artist tracker:coalesce(nmm:albumTrackCount(?album), (SELECT COUNT(?_1) WHERE { ?_1 nmm:musicAlbum ?album; tracker:available "true" })) (SELECT GROUP_CONCAT(fn:year-from-dateTime(?c), ",") WHERE { ?_2 nmm:musicAlbum ?album; nie:contentCreated ?c; tracker:available "true" }) as albumyear { ?album a nmm:MusicAlbum FILTER (EXISTS { ?_3 nmm:musicAlbum ?album; tracker:available "true" }) } ORDER BY ?album_artist ?albumyear nie:title(?album)'
 
-        //tracker.query_async(this.query, null, Lang.bind(this, this._queueCollector, null));
-
-        /* Check if there are albums to be viewed
-        if(true) {
-            // Empty view if there is no albums to be viewed
-            let empty_view = new EmptyView("emblem-music-symbolic", "No Albums Found!");
-            this.add(empty_view);
-        }
-        else {
-            // View albums
-            /* let items = Application.AlbumsManager.get_items();
-               for(let item in items) {
-                   this.model.add_item(item);
-               }
-           
-            let label = new Gtk.Label({label : "Albums Should apear here instead of this label"});
-            this.pack_start(label, true, true, 0);
-        }
-        */
     },
 
     populate: function() {
-        print ("===========================")
         this.model.clear();
+        this.offset = 1;
         tracker.query_async(this.query, null, Lang.bind(this, this._queueCollector, null));
     },
 
     _queueCollector: function(connection, res, params) {
-        //print (res);
         print("queueCollector");
-        try {
-            let offset = 1;
-            let cursor = tracker.query_finish(res);
-            while(cursor.next(null)){
-                if (offset % 50 != 0){
-                    var album = {
-                        "id": cursor.get_string(0)[0],
-                        "title": cursor.get_string(1)[0],
-                        "artist": cursor.get_string(2)[0],
-                        "num_tracks": cursor.get_integer(3),
-                        "year": cursor.get_integer(4),
-                        "icon": GdkPixbuf.Pixbuf.new_from_file('/usr/share/icons/gnome/scalable/places/folder-music-symbolic.svg')
-                    }
-                    offset += 1;
-                    print (album)
-                    print ("=========")
-                    let iter = this.model.append();
-                    print ("==============>",album["title"], album["year"])
-                    this.model.set(iter, [ 0, 1, 2, 3, 4, 5 ],
-                        [ album["id"], "", album["title"], album["artist"], album["icon"], album["num_tracks"]]);
+        let cursor = tracker.query_finish(res);
+        while(cursor.next(null)){
+            if (this.offset % 150 != 0){
+                var album = {
+                    "id": cursor.get_string(0)[0],
+                    "title": cursor.get_string(1)[0],
+                    "artist": cursor.get_string(2)[0],
+                    "num_tracks": cursor.get_integer(3),
+                    "year": cursor.get_integer(4),
+                    "icon": GdkPixbuf.Pixbuf.new_from_file('/usr/share/icons/gnome/scalable/places/folder-music-symbolic.svg')
                 }
+                var icon = albumArtCache.lookup (128, album["artist"], album["title"]);
+                this.offset += 1;
+                album["icon"] = icon
+                let iter = this.model.append();
+                this.model.set(iter, [ 0, 1, 2, 3, 4, 5 ],
+                    [ album["id"], "", album["title"], album["artist"], album["icon"], album["num_tracks"]]);
             }
-            
-            
-        } catch (e) {
-            print('Unable to query collection items ' + e.message);
-            return;
         }
     },
 
@@ -187,7 +159,6 @@ const Songs = new Lang.Class({
     Extends: ViewContainer,
     _init: function(header_bar){
         this.parent("Songs", header_bar);
-
         this.query = "SELECT tracker:id(?song) nie:url(?song) nie:title(?song) nmm:artistName(nmm:performer(?song)) tracker:id(nmm:musicAlbum(?song)) nie:title(nmm:musicAlbum(?song)) nfo:duration(?song) { ?song a nmm:MusicPiece } ORDER BY tracker:added(?song)"
         this._items = {}
         this.model = Gtk.ListStore.new(
@@ -206,14 +177,14 @@ const Songs = new Lang.Class({
         listWidget.selection_mode = false;
 
         let albumRenderer =
-            new Gd.StyledTextRenderer({ xpad: 16 });
+            new Gd.StyledTextRenderer({ xpad: 0 });
         albumRenderer.add_class('dim-label');
 
         listWidget.add_renderer(albumRenderer, Lang.bind(this,
             function(col, cell, model, iter) {
                 let id = model.get_value(iter, 0);
                 let doc = this._getItem(id);
-                albumRenderer.text = ""// doc["album"];
+                albumRenderer.text = doc["album"];
             }));
 
 
@@ -243,54 +214,49 @@ const Songs = new Lang.Class({
 
     populate: function() {
         this.model.clear();
+        this.offset = 1;
         tracker.query_async(this.query,
                             null, Lang.bind(this, this._queueCollector, null));
     },
 
     _queueCollector: function(connection, res, params) {
         print("queueCollector");
-            let offset = 1;
-            let cursor = tracker.query_finish(res);
-            while(cursor.next(null)){
-                if (offset % 100 != 0){
-                    let id =cursor.get_string(0)[0]
-                    let song = {
-                        "id": id,
-                        "url": cursor.get_string(1)[0],
-                        "title": cursor.get_string(2)[0],
-                        "artist": cursor.get_string(3)[0],
-                        "album_id": cursor.get_string(4)[0],
-                        "album": cursor.get_string(5)[0],
-                        "duration": parseInt(cursor.get_string(6)[0]),
-                        "icon": GdkPixbuf.Pixbuf.new_from_file('/usr/share/icons/gnome/scalable/places/folder-music-symbolic.svg'),
-                    }
-                    offset += 1;
-                    //this.model.append([tracker_id, title, artist, album, null])
-                    this._items[id] = song
-
-                    if (song["title"] != null) {
-                        let iter = this.model.append();
-                        this.model.set(iter,
-                            [0, 1, 2, 3, 4, 5],
-                            [song["id"],
-                            song["album"],
-                            song["title"],
-                            song["artist"],
-                            song["icon"],
-                            song["duration"]]);
-                    }
-                    else
-                        print (song["url"])
-                    
-                //this.model.push_item(tracker_id, title, artists, icon, duration, data);
+        let cursor = tracker.query_finish(res);
+        while(cursor.next(null)){
+            if (this.offset % 600 != 0){
+                let id =cursor.get_string(0)[0]
+                let song = {
+                    "id": id,
+                    "url": cursor.get_string(1)[0],
+                    "title": cursor.get_string(2)[0],
+                    "artist": cursor.get_string(3)[0],
+                    "album_id": cursor.get_string(4)[0],
+                    "album": cursor.get_string(5)[0],
+                    "duration": parseInt(cursor.get_string(6)[0]),
+                    "icon": GdkPixbuf.Pixbuf.new_from_file('/usr/share/icons/gnome/scalable/places/folder-music-symbolic.svg'),
                 }
+                this.offset += 1;
+                //this.model.append([tracker_id, title, artist, album, null])
+                this._items[id] = song
+
+                if (song["title"] != null) {
+                    var icon = albumArtCache.lookup (48, song["artist"], song["album"]);
+                    song["icon"] = icon;
+                    let iter = this.model.append();
+                    this.model.set(iter,
+                        [0, 1, 2, 3, 4, 5],
+                        [song["id"],
+                        song["album"],
+                        song["title"],
+                        song["artist"],
+                        song["icon"],
+                        song["duration"]]);
+                }
+                else
+                    print (song["url"])
             }
-
-        
-
+        }
     },
-
-
 });
 
 const Playlists = new Lang.Class({

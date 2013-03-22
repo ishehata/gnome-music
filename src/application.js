@@ -62,6 +62,10 @@ const Application = new Lang.Class({
             //this._build_app_menu();
             //this._define_style_and_themes();
             
+            
+            GLib.set_prgname('gnome-music');
+            GLib.set_application_name(_("Music"));
+            
             this.connect('activate', Lang.bind(this, this._onActivate));
             this.connect('startup', Lang.bind(this, this._onStartup));
             //this._settings.connect("changed", Lang.bind(this, this._on_settings_key_changed));
@@ -82,6 +86,8 @@ const Application = new Lang.Class({
         _build_app: function(){
                 this._window = new Gtk.ApplicationWindow({application: this,
                                                           title: _("Music"),
+                                                           window_position: Gtk.WindowPosition.CENTER,
+                                                            hide_titlebar_when_maximized: true,
                                                           });
 
                 this.vbox = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL, spacing: 0});
