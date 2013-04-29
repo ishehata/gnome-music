@@ -174,7 +174,6 @@ const Player = new Lang.Class({
         if (this.timeout) {
             GLib.source_remove(this.timeout);
         }
-        this.play_btn.set_playing();
         if(this.player.get_state(1)[1] != Gst.State.PAUSED) {
             this.stop();
         }
@@ -186,12 +185,10 @@ const Player = new Lang.Class({
     },
 
     pause: function () {
-        this.player.set_state(Gst.State.PAUSED);
-     //   this.play_btn.set_active(false);
+        this.play_btn.set_active(false);
     },
 
     stop: function() {
-        //this.play_btn.set_playing();
         this.player.set_state(Gst.State.NULL);
         if (this.timeout) {
             GLib.source_remove(this.timeout);
