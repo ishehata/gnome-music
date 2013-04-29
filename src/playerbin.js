@@ -75,7 +75,7 @@ const Playerbin = new Lang.Class({
         if(this.player.get_state(1)[1] != Gst.State.PAUSED) {
             this.stop();
         }
-        this.load( this.playlist.get_value( this.currentTrack, this.playlist_field));
+      //  this.load( this.playlist.get_value( this.currentTrack, this.playlist_field));
 
         this.player.set_state(Gst.State.PLAYING);
         this._updatePositionCallback();
